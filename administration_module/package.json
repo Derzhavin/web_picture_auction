@@ -1,0 +1,23 @@
+{
+  "name": "administration_module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "latest",
+    "del": "^5.1.0",
+    "express": "^4.17.1",
+    "jquery": "^3.4.1",
+    "less": "^3.10.3",
+    "public": "^0.1.5",
+    "pug": "^2.0.4",
+    "serve-favicon": "^2.5.0"
+  }
+}
