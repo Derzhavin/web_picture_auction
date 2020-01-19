@@ -10,16 +10,16 @@ var persons_json = require('./public/jsons/persons');
 var settings = require('./public/jsons/settings');
 
 
-router.get('/', function(req,res,next) {
-    res.render('index', {title:'Главная страница', arts: arts_json});
+router.get('/main', function(req,res,next) {
+    res.render('main', {title:'Main', arts: arts_json});
 });
 
 router.get('/settings', function(req,res,next) {
-    res.render('settings', {title:'Настройки', item: settings});
+    res.render('settings', {title:'Auction settings', item: settings});
 });
 
-router.get('/cards', function(req,res,next) {
-    res.render('cards', {title:'Участники', persons: persons_json});
+router.get('/participants', function(req,res,next) {
+    res.render('participants', {title:'Participants', persons: persons_json});
 });
 
 module.exports = router;

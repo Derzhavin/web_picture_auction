@@ -1,0 +1,12 @@
+doctype html
+html
+    head
+        title= title
+        script(src="/jquery/jquery.js")
+    body
+        link(rel="stylesheet" href="/style.css")
+        div#header
+            button.redirectButton(onclick="location.href='/main'") Main
+            button.redirectButton(onclick="location.href='/participants'") Participants
+            button.redirectButton(onclick="location.href='/settings'") Auction settings
+        block content
