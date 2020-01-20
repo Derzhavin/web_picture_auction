@@ -1,8 +1,10 @@
 doctype html
-html
+html(lang="en")
     head
-        title= title
-        script(src="/jquery/jquery.js")
+    title= title
+    script(src="/jquery/jquery.js" type="module")
+    script(src="/JSPagesProcessing/common.js" type="module")
+
     body
         link(rel="stylesheet" href="/style.css")
         div#header
