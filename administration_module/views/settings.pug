@@ -1,32 +1,29 @@
 extends layout
 
 block content
-    script(src="/JSPagesProcessing/settings.js")
-
-    div(align="center")
+    div.settingsDiv
         br
-        |
         form(action="/changeSetting" method="POST")
-            fieldset.settingsAuctionFieldset
-                label.settingsAuctionLabel Date to start auction
-                input.settingsAuctionInput(name="date" type="date" disabled)
+            fieldset.fieldset
+                label.label Date to start auction
+                input.input(name="date" type="date" value=item["date"] disabled)
 
-            fieldset.settingsAuctionFieldset
-                label.settingsAuctionLabel Time to start auction
-                input.settingsAuctionInput(name="time" type="time" disabled)
+            fieldset.fieldset
+                label.label Time to start auction
+                input.input(name="time" type="time" value=item["time"] disabled)
 
-            fieldset.settingsAuctionFieldset
-                label.settingsAuctionLabel Selling timeout
-                input.settingsAuctionInput(name="timeout" type="time" disabled)
+            fieldset.fieldset
+                label.label Selling timeout
+                input.input(name="timeout" type="time" value=item["timeout"] disabled)
 
-            fieldset.settingsAuctionFieldset
-                label.settingsAuctionLabel Auction duration
-                input.settingsAuctionInput(name="duration" type="time" disabled)
+            fieldset.fieldset
+                label.label Auction duration
+                input.input(name="duration" type="time" value=item["duration"] disabled)
 
-            fieldset.settingsAuctionFieldset
-                label.settingsAuctionLabel Pause to inspect picture
-                input.settingsAuctionInput(name="pause" type="time" disabled)
+            fieldset.fieldset
+                label.label Pause to inspect picture
+                input.input(name="pause" type="time" value=item["pause"] disabled)
         br
         |
-        button.bodyButton#editForm(onclick="editForm()") Edit
-        button.bodyButton#applyChanges(onclick="applyChanges()" disabled) Apply
+        button.bodyButton(onclick="edit(this)") Edit
+        button.bodyButton(onclick="apply(this)" disabled) Apply
