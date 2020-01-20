@@ -34,19 +34,30 @@
 .redirectButton:hover {
   background-color: goldenrod;
 }
-.settingsAuctionFieldset {
+.divWithForm {
+  border-style: dashed;
+  width: 450px;
+  margin-top: 20px;
+}
+.settingsDiv {
+  border-style: dashed;
+  width: 450px;
+  margin-top: 20px;
+  height: 350px;
+}
+.fieldset {
   width: 400px;
   text-align: right;
 }
-.settingsAuctionLabel {
+.label {
   font-size: 20px;
   font-family: Arial;
 }
-.settingsAuctionInput {
+.input {
   font-size: 20px;
   font-family: Arial;
-  margin-left: 20px;
-  width: 150px;
+  margin-left: 10px;
+  width: 170px;
 }
 .bodyButton {
   cursor: pointer;
@@ -58,4 +69,11 @@
 }
 .bodyButton:hover:enabled {
   background-color: lightcoral;
+}
+.participantsParticipant {
+  border-style: dashed;
+  margin-top: 20px;
+  border-width: 2px;
+  width: 450px;
+  height: 180px;
 }

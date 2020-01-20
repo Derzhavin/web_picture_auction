@@ -1,5 +1,33 @@
 extends layout
 
 block content
-    script(src="/JSPagesProcessing/participants.js" type="module")
-    h1 Participants
+    div.participantsParticipant#instance
+        br
+        fieldset.fieldset
+            label.label Username
+            input.input(name="username" type="name" value="")
+
+        fieldset.fieldset
+            label.label Amount of money
+            input.input(name="money" type="number" value="")
+        br
+        button.bodyButton(onclick="edit(this)") Edit
+        button.bodyButton(onclick="apply(this)" disabled) Apply
+        button.bodyButton(onclick="remove(this)") Remove
+
+    button.bodyButton(onclick="addNew(this)") Add new participant
+
+    for participant in participants
+        div.participantsParticipant
+            br
+            fieldset.fieldset
+                label.label Username
+                input.input(name="username" type="name" value=participant.username disabled)
+
+            fieldset.fieldset
+                label.label Amount of money
+                input.input(name="money" type="number" value=participant.money disabled)
+            br
+            button.bodyButton(onclick="edit(this)") Edit
+            button.bodyButton(onclick="apply(this)" disabled) Apply
+            button.bodyButton(onclick="remove(this)") Remove

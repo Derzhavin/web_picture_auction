@@ -2,8 +2,8 @@ doctype html
 html(lang="en")
     head
     title= title
-    script(src="/jquery/jquery.js" type="module")
-    script(src="/JSPagesProcessing/common.js" type="module")
+    script(src="/jquery/jquery.js")
+    script(src="/pageProcessing.js")
 
     body
         link(rel="stylesheet" href="/style.css")
@@ -11,4 +11,7 @@ html(lang="en")
             button.redirectButton(onclick="location.href='/main'") Main
             button.redirectButton(onclick="location.href='/participants'") Participants
             button.redirectButton(onclick="location.href='/settings'") Auction settings
-        block content
+        div(align="center")
+            br
+            |
+            block content
