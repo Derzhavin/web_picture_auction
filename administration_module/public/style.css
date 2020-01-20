@@ -6,15 +6,19 @@
   margin-right: 5%;
   border-radius: 5px;
   box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
 }
-button {
+.button {
   cursor: pointer;
-  box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.5);
   border-radius: 5px;
   height: 30px;
+  font-size: 20px;
 }
-button,
 .redirectButton {
+  border-radius: 5px;
+  height: 30px;
+  box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.5);
   background-color: darkcyan;
   border: none;
   color: black;
@@ -29,4 +33,29 @@ button,
 }
 .redirectButton:hover {
   background-color: goldenrod;
+}
+.settingsAuctionFieldset {
+  width: 400px;
+  text-align: right;
+}
+.settingsAuctionLabel {
+  font-size: 20px;
+  font-family: Arial;
+}
+.settingsAuctionInput {
+  font-size: 20px;
+  font-family: Arial;
+  margin-left: 20px;
+  width: 150px;
+}
+.bodyButton {
+  cursor: pointer;
+  border-radius: 5px;
+  height: 30px;
+  font-size: 20px;
+  align-self: center;
+  background-color: lightblue;
+}
+.bodyButton:hover:enabled {
+  background-color: lightcoral;
 }

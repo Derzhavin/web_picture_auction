@@ -1,5 +1,32 @@
 extends layout
 
 block content
-    script(src="/JSPagesProcessing/settings.js" type="module")
-    h1 Settings
+    script(src="/JSPagesProcessing/settings.js")
+
+    div(align="center")
+        br
+        |
+        form(action="/changeSetting" method="POST")
+            fieldset.settingsAuctionFieldset
+                label.settingsAuctionLabel Date to start auction
+                input.settingsAuctionInput(name="date" type="date" disabled)
+
+            fieldset.settingsAuctionFieldset
+                label.settingsAuctionLabel Time to start auction
+                input.settingsAuctionInput(name="time" type="time" disabled)
+
+            fieldset.settingsAuctionFieldset
+                label.settingsAuctionLabel Selling timeout
+                input.settingsAuctionInput(name="timeout" type="time" disabled)
+
+            fieldset.settingsAuctionFieldset
+                label.settingsAuctionLabel Auction duration
+                input.settingsAuctionInput(name="duration" type="time" disabled)
+
+            fieldset.settingsAuctionFieldset
+                label.settingsAuctionLabel Pause to inspect picture
+                input.settingsAuctionInput(name="pause" type="time" disabled)
+        br
+        |
+        button.bodyButton#editForm(onclick="editForm()") Edit
+        button.bodyButton#applyChanges(onclick="applyChanges()" disabled) Apply

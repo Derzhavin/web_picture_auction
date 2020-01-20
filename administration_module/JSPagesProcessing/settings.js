@@ -1,5 +1,11 @@
-import {setupHeader} from "./common.js";
+function editForm() {
+    $("#editForm").prop("disabled", true);
+    $("#applyChanges").prop("disabled", false);
+    $("input").prop("disabled", false);
+}
 
-$(document).ready(
-    () => setupHeader()
-)
+function applyChanges() {
+    $("#applyChanges").prop("disabled", true);
+    $("#editForm").prop("disabled", false);
+    $("input").prop("disabled", true);
+}
