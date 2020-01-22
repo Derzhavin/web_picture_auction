@@ -1,11 +1,20 @@
 [
   {
     "id": 0,
-    "artName": "Мона Лиза",
-    "artist": "Леонардо да Винчи",
+    "artName": "Mona Lisa",
+    "artist": "Leonardo da Vinci",
     "price": "1000",
     "minStep": "50",
     "maxStep": "100",
-    "way": "C:\\Users\\derzh\\WebStormProjects\\picture_auction\\administration_module\\public\\imgs\\arts\\Mona_Lisa.jpg"
+    "way": "/imgs/arts/Mona_Lisa.jpg"
+  },
+  {
+    "id": 0,
+    "artName": "van Gogh",
+    "artist": "Sunflowers",
+    "price": "1000",
+    "minStep": "50",
+    "maxStep": "100",
+    "way": "/imgs/arts/sunflowers.jpg"
   }
 ]

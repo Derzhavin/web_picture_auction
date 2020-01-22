@@ -1,0 +1,31 @@
+#header {
+  background-color: cornflowerblue;
+  width: 90%;
+  height: 50px;
+  margin-left: 5%;
+  margin-right: 5%;
+  border-radius: 5px;
+  box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+}
+.fieldset {
+  width: 400px;
+  text-align: right;
+}
+.label {
+  font-size: 20px;
+  font-family: Arial;
+}
+.input {
+  font-size: 20px;
+  font-family: Arial;
+  margin-left: 10px;
+  width: 170px;
+}
+.fileInput {
+  font-size: 20px;
+  font-family: Arial;
+  margin-left: 10px;
+  width: 170px;
+}

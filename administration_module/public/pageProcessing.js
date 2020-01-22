@@ -1,18 +1,27 @@
+let buttonIdAndRoute = {
+  "artsRedirect": "/arts",
+  "participantsRedirect": "/participants",
+  "settingsRedirect": "/settings"
+};
+let route = document.location.href;
 $(document).ready(() => {
   setupHeader();
   hideInstance();
+  $("input.fileInput").get().forEach(input => input.onchange = addArt);
 });
 
 function setupHeader() {
   $("#header").children().get().forEach(button => {
-    if ($(button).text() === $("title").text()) {
+    if (route.includes(buttonIdAndRoute[button.id])) {
       $(button).css("background-color", "olivedrab");
     }
   });
 }
 
 function hideInstance() {
-  $("#instance").hide();
+  if (!route.includes('/settings')) {
+    $("div:eq(2)").hide();
+  }
 }
 
 function activateButtonWhenInputsFilled(inputs, button) {
@@ -59,25 +68,34 @@ function remove(button) {
 }
 
 function addNew(button) {
-  let instanceDiv = $("#instance").clone();
+  let instanceDiv = $("div:eq(2)").clone();
   instanceDiv.show();
-  let inputsInDiv = instanceDiv.find("fieldset").children("input");
-  let divWithButtons = null;
-
-  if ($("title").text() != "Arts") {
-    divWithButtons = instanceDiv;
-  } else {
-    divWithButtons = instanceDiv.children("div");
-  }
-
-  divWithButtons.children("button").get().forEach(divButton => {
-    if ($(divButton).text() !== "Remove") {
+  let inputsInDiv = instanceDiv.find("input.input");
+  instanceDiv.find("input.fileInput").get().forEach(fileInput => fileInput.onchange = addArt);
+  instanceDiv.find("button").get().forEach(divButton => {
+    if (!$(divButton).hasClass('removeButton')) {
       $(divButton).prop("disabled", true);
     }
 
-    if ($(divButton).text() === "Apply") {
+    if ($(divButton).hasClass('applyButton')) {
       activateButtonWhenInputsFilled(inputsInDiv.get(), divButton);
     }
   });
   $(button).after(instanceDiv);
+}
+
+function addArt(event) {
+  let file = event.target.files[0];
+  let reader = new FileReader();
+  let preview = $(event.target).parent("div").find("img").get()[0];
+
+  reader.onloadend = function () {
+    preview.src = reader.result;
+  };
+
+  if (file) {
+    reader.readAsDataURL(file);
+  } else {
+    preview.src = "";
+  }
 }
