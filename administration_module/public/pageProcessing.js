@@ -37,7 +37,6 @@ function edit(button) {
   let inputs = $(button).parent("div").find("fieldset").children("input");
   $(button).next().prop("disabled", false);
   inputs.prop("disabled", false);
-  console.log(inputs.get()[2]);
   activateButtonWhenInputsFilled(inputs.get(), $(button).next());
 }
 
@@ -49,16 +48,29 @@ function apply(button) {
 }
 
 function remove(button) {
-  let div = $(button).closest("div");
-  div.next().remove();
-  div.remove();
+  switch ($("title").text()) {
+    case "Arts":
+      $(button).closest("div").parent("div").remove();
+      break;
+
+    default:
+      $(button).closest("div").remove();
+  }
 }
 
 function addNew(button) {
-  let div = $("#instance").clone();
-  div.show();
-  let inputsInDiv = div.find("fieldset").children("input");
-  div.children("button").get().forEach(divButton => {
+  let instanceDiv = $("#instance").clone();
+  instanceDiv.show();
+  let inputsInDiv = instanceDiv.find("fieldset").children("input");
+  let divWithButtons = null;
+
+  if ($("title").text() != "Arts") {
+    divWithButtons = instanceDiv;
+  } else {
+    divWithButtons = instanceDiv.children("div");
+  }
+
+  divWithButtons.children("button").get().forEach(divButton => {
     if ($(divButton).text() !== "Remove") {
       $(divButton).prop("disabled", true);
     }
@@ -67,5 +79,5 @@ function addNew(button) {
       activateButtonWhenInputsFilled(inputsInDiv.get(), divButton);
     }
   });
-  $(button).after(div);
+  $(button).after(instanceDiv);
 }

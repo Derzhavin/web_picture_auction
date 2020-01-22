@@ -10,8 +10,8 @@ var participants = require('./public/jsons/participants');
 var settings = require('./public/jsons/settings');
 
 
-router.get('/main', function(req,res,next) {
-    res.render('main', {title:'Main', arts: arts});
+router.get('/arts', function(req,res,next) {
+    res.render('arts', {title:'Arts', arts: arts});
 });
 
 router.get('/settings', function(req,res,next) {

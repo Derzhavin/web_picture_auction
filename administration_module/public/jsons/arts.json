@@ -1,1 +1,11 @@
-{}
+[
+  {
+    "id": 0,
+    "artName": "Мона Лиза",
+    "artist": "Леонардо да Винчи",
+    "price": "1000",
+    "minStep": "50",
+    "maxStep": "100",
+    "way": "C:\\Users\\derzh\\WebStormProjects\\picture_auction\\administration_module\\public\\imgs\\arts\\Mona_Lisa.jpg"
+  }
+]

@@ -77,3 +77,24 @@
   width: 450px;
   height: 180px;
 }
+.artsArtInner {
+  border-style: dashed;
+  margin-top: 20px;
+  border-width: 2px;
+  width: 450px;
+  height: 320px;
+  display: inline-block;
+  border-style: none;
+  margin-left: 20px;
+}
+.artsFile {
+  display: inline-block;
+  width: 250px;
+  height: 300px;
+}
+.artsArtOuter {
+  border-style: dashed;
+  width: 450px;
+  margin-top: 20px;
+  width: 760px;
+}
