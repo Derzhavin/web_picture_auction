@@ -1,0 +1,64 @@
+extends layout
+
+block content
+    div.artsArtOuter#instance
+        div.artsFile
+            img(src="" width="250" height="250" style="display:inline-block")
+            input(name="file" type="file").input
+
+        div.artsArtInner
+            fieldset.fieldset
+                label.label Name of art
+                input.input(name="artName" type="name" value="")
+
+            fieldset.fieldset
+                label.label Artist of art
+                input.input(name="artist" type="name" value="")
+
+            fieldset.fieldset
+                label.label Start price
+                input.input(name="price" type="number" value="")
+
+            fieldset.fieldset
+                label.label Minimum step
+                input.input(name="minStep" type="number" value="")
+
+            fieldset.fieldset
+                label.label Maximum step
+                input.input(name="maxStep" type="number" value="")
+            br
+            button.bodyButton(onclick="edit(this)") Edit
+            button.bodyButton(onclick="apply(this)" disabled) Apply
+            button.bodyButton(onclick="remove(this)") Remove
+
+    button.bodyButton(onclick="addNew(this)") Add new art
+
+    for art in arts
+        div.artsArtOuter
+            div.artsFile
+                img(src=art.way height="250" style="display:inline-block")
+                input(name="file" type="file").input
+            div.artsArtInner
+                fieldset.fieldset
+                    label.label Name of art
+                    input.input(name="artName" type="name" value=art.artName)
+
+                fieldset.fieldset
+                    label.label Artist of art
+                    input.input(name="artist" type="name" value=art.artist)
+
+                fieldset.fieldset
+                    label.label Start price
+                    input.input(name="price" type="number" value=art.price)
+
+                fieldset.fieldset
+                    label.label Minimum step
+                    input.input(name="minStep" type="number" value=art.minStep)
+
+                fieldset.fieldset
+                    label.label Maximum step
+                    input.input(name="maxStep" type="number" value=art.maxStep)
+                br
+                button.bodyButton(onclick="edit(this)") Edit
+                button.bodyButton(onclick="apply(this)" disabled) Apply
+                button.bodyButton(onclick="remove(this)") Remove
