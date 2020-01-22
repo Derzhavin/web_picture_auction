@@ -53,6 +53,7 @@ function apply(button) {
   $(button).prop("disabled", true);
   $(button).prev().prop("disabled", false);
   $(button).next().prop("disabled", false);
+  $(button).parent("div").find("form")[0].submit();
   $(button).parent("div").find("fieldset").children("input").prop("disabled", true);
 }
 
