@@ -1,12 +1,11 @@
 extends layout
 
 block content
-    div.artsArtOuter#instance
-        div.artsFile
-            img(src="" width="250" height="250" style="display:inline-block")
-            input(name="file" type="file").input
-
-        div.artsArtInner
+    div.artOuterDiv
+        div.artFileDiv
+            img(src="" height="250" style="display:inline-block")
+            input(name="file" type="file").fileInput
+        div.artInnerDiv
             fieldset.fieldset
                 label.label Name of art
                 input.input(name="artName" type="name" value="")
@@ -27,18 +26,18 @@ block content
                 label.label Maximum step
                 input.input(name="maxStep" type="number" value="")
             br
-            button.bodyButton(onclick="edit(this)") Edit
-            button.bodyButton(onclick="apply(this)" disabled) Apply
-            button.bodyButton(onclick="remove(this)") Remove
+            button.editButton(onclick="edit(this)") Edit
+            button.applyButton(onclick="apply(this)" disabled) Apply
+            button.removeButton(onclick="remove(this)") Remove
 
     button.bodyButton(onclick="addNew(this)") Add new art
 
     for art in arts
-        div.artsArtOuter
-            div.artsFile
+        div.artOuterDiv
+            div.artFileDiv
                 img(src=art.way height="250" style="display:inline-block")
-                input(name="file" type="file").input
-            div.artsArtInner
+                input(name="file" type="file").fileInput
+            div.artInnerDiv
                 fieldset.fieldset
                     label.label Name of art
                     input.input(name="artName" type="name" value=art.artName)
@@ -59,6 +58,6 @@ block content
                     label.label Maximum step
                     input.input(name="maxStep" type="number" value=art.maxStep)
                 br
-                button.bodyButton(onclick="edit(this)") Edit
-                button.bodyButton(onclick="apply(this)" disabled) Apply
-                button.bodyButton(onclick="remove(this)") Remove
+                button.editButton(onclick="edit(this)") Edit
+                button.applyButton(onclick="apply(this)" disabled) Apply
+                button.removeButton(onclick="remove(this)") Remove

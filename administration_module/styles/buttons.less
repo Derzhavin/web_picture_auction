@@ -1,0 +1,60 @@
+.button {
+  cursor: pointer;
+  border-radius: 5px;
+  height: 30px;
+  font-size: 20px;
+}
+
+.redirectButton {
+  .button;
+  box-shadow: 0 6px 8px 0 rgba(0,0,0,0.5);
+  background-color: darkcyan;
+  border: none;
+  color: black;
+  padding: 5px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  cursor: pointer;
+  float: left;
+  margin: 10px;
+}
+
+.redirectButton:hover {
+  background-color: goldenrod;
+}
+
+.bodyButton {
+  .button;
+  align-self: center;
+  background-color: lightblue;
+}
+
+.bodyButton:hover:enabled {
+  background-color: lightcoral;
+}
+
+.editButton {
+  .bodyButton;
+}
+
+.removeButton {
+  .bodyButton;
+}
+
+.applyButton {
+  .bodyButton;
+}
+
+.editButton:hover:enabled {
+  background-color: lightcoral;
+}
+
+.removeButton:hover:enabled {
+  background-color: lightcoral;
+}
+
+.applyButton:hover:enabled {
+  background-color: lightcoral;
+}

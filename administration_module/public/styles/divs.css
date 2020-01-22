@@ -1,0 +1,39 @@
+.formDiv {
+  border-style: dashed;
+  width: 450px;
+  margin-top: 20px;
+}
+.settingsDiv {
+  border-style: dashed;
+  width: 450px;
+  margin-top: 20px;
+  height: 350px;
+}
+.participantDiv {
+  border-style: dashed;
+  margin-top: 20px;
+  border-width: 2px;
+  width: 450px;
+  height: 180px;
+}
+.artInnerDiv {
+  border-style: dashed;
+  margin-top: 20px;
+  border-width: 2px;
+  width: 450px;
+  height: 320px;
+  display: inline-block;
+  border-style: none;
+  margin-left: 20px;
+}
+.artFileDiv {
+  display: inline-block;
+  width: 250px;
+  height: 300px;
+}
+.artOuterDiv {
+  border-style: dashed;
+  width: 450px;
+  margin-top: 20px;
+  width: 760px;
+}

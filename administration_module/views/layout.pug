@@ -1,16 +1,19 @@
 doctype html
 html(lang="en")
     head
-    title= title
+    title=title
     script(src="/jquery/jquery.js")
     script(src="/pageProcessing.js")
 
     body
-        link(rel="stylesheet" href="/style.css")
+        link(rel="stylesheet" href="/styles/other.css")
+        link(rel="stylesheet" href="/styles/buttons.css")
+        link(rel="stylesheet" href="/styles/divs.css")
+
         div#header
-            button.redirectButton(onclick="location.href='/arts'") Arts
-            button.redirectButton(onclick="location.href='/participants'") Participants
-            button.redirectButton(onclick="location.href='/settings'") Auction settings
+            button#artsRedirect.redirectButton(onclick="location.href='/arts'") Arts
+            button#participantsRedirect.redirectButton(onclick="location.href='/participants'") Participants
+            button#settingsRedirect.redirectButton(onclick="location.href='/settings'") Auction settings
         div(align="center")
             br
             |

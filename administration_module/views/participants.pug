@@ -1,7 +1,7 @@
 extends layout
 
 block content
-    div.participantsParticipant#instance
+    div.participantDiv
         br
         fieldset.fieldset
             label.label Username
@@ -11,14 +11,14 @@ block content
             label.label Amount of money
             input.input(name="money" type="number" value="")
         br
-        button.bodyButton(onclick="edit(this)") Edit
-        button.bodyButton(onclick="apply(this)" disabled) Apply
-        button.bodyButton(onclick="remove(this)") Remove
+        button.editButton(onclick="edit(this)") Edit
+        button.applyButton(onclick="apply(this)" disabled) Apply
+        button.removeButton(onclick="remove(this)") Remove
 
     button.bodyButton(onclick="addNew(this)") Add new participant
 
     for participant in participants
-        div.participantsParticipant
+        div.participantDiv
             br
             fieldset.fieldset
                 label.label Username
@@ -28,6 +28,6 @@ block content
                 label.label Amount of money
                 input.input(name="money" type="number" value=participant.money disabled)
             br
-            button.bodyButton(onclick="edit(this)") Edit
-            button.bodyButton(onclick="apply(this)" disabled) Apply
-            button.bodyButton(onclick="remove(this)") Remove
+            button.editButton(onclick="edit(this)") Edit
+            button.applyButton(onclick="apply(this)" disabled) Apply
+            button.removeButton(onclick="remove(this)") Remove
