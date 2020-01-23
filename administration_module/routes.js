@@ -15,6 +15,35 @@ router.get('/arts', (req,res) => {
     res.render('arts', {title:'Arts', arts: arts});
 });
 
+router.post('/arts', (req, res) => {
+    console.log(req.body, "post");
+
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
+        sendFailure(res, 'art', 'add');
+    } else {
+        sendSuccess(res, 'Art', 'added');
+    }
+});
+
+router.delete('/arts', (req, res) => {
+    console.log(req.body, "delete");
+
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
+        sendFailure(res, 'art', 'remove');
+    } else {
+        sendSuccess(res, 'Art', 'removed');
+    }
+});
+
+router.put('/arts', (req, res) => {
+    console.log(req.body, "put");
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
+        sendFailure(res, 'art', 'update');
+    } else {
+        sendSuccess(res, 'Art', 'updated');
+    }
+});
+
 router.get('/settings', (req,res) => {
     if (!settings || Object.keys(settings).length === 0) {
         let date = new Date();
@@ -32,24 +61,69 @@ router.get('/settings', (req,res) => {
     res.render('settings', {title:'Auction settings', item: settings});
 });
 
+router.put('/settings', (req, res) => {
+    console.log(req.body, "put");
+
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
+        sendFailure(res, 'settings', 'update');
+    } else {
+        sendSuccess(res, 'Settings', 'updated');
+    }
+    // if (!req.body) {
+    //     res.status = 400;
+    // }
+    // settings.date = req.body.date;
+    // settings.time = req.body.time;
+    // settings.timeout = req.body.timeout;
+    // settings.duration = req.body.duration;
+    // settings.pause_time = req.body.pause_time;
+    //
+    // fs.writeFile(path.join(__dirname,'public','jsons','settings.json'), JSON.stringify(settings),err => {
+    //     if(err) {
+    //         throw err;
+    //     }
+    // });
+});
+
 router.get('/participants', (req,res) => {
     res.render('participants', {title:'Participants', participants: participants});
 });
 
-router.post('/change-settings', (req, res) => {
-    settings.date = req.body.date;
-    settings.time = req.body.time;
-    settings.timeout = req.body.timeout;
-    settings.duration = req.body.duration;
-    settings.pause_time = req.body.pause_time;
-
-    fs.writeFile(path.join(__dirname,'public','jsons','settings.json'), JSON.stringify(settings),err => {
-        if(err) {
-            throw err;
-        }
-    });
-
-    res.redirect('/settings')
+router.post('/participants', (req, res) => {
+    console.log(req.body, "post");
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
+        sendFailure(res, 'participant', 'add');
+    } else {
+        sendSuccess(res, 'Participant', 'added');
+    }
 });
+
+router.delete('/participants', (req, res) => {
+    console.log(req.body, "delete");
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
+        sendFailure(res, 'participant', 'remove');
+    } else {
+        sendSuccess(res, 'Participant', 'removed');
+    }
+});
+
+router.put('/participants', (req, res) => {
+    console.log(req.body, "put");
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
+        sendFailure(res, 'participant', 'update');
+    } else {
+        sendSuccess(res, 'Participant', 'updated');
+    }
+});
+
+function sendSuccess(res, entity, operation) {
+    res.status(200);
+    return res.json({msg:`${entity} was ${operation} succesfuly!`});
+}
+
+function sendFailure(res, entity, operation) {
+    res.status(400);
+    return res.json({msg:`Failed to ${operation} ${entity}!`});
+}
 
 module.exports = router;

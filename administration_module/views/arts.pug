@@ -3,8 +3,7 @@ extends layout
 block content
     div.artOuterDiv
         div.artFileDiv
-            img(src="" height="250" style="display:inline-block")
-            input(name="file" type="file").fileInput
+            img(src="" height="280" style="display:inline-block")
         div.artInnerDiv
             fieldset.fieldset
                 label.label Name of art
@@ -25,18 +24,21 @@ block content
             fieldset.fieldset
                 label.label Maximum step
                 input.input(name="maxStep" type="number" value="")
+            fieldset.fieldset
+                label.label Link
+                input.input(name="link" type="name" value="")
             br
             button.editButton(onclick="edit(this)") Edit
             button.applyButton(onclick="apply(this)" disabled) Apply
             button.removeButton(onclick="remove(this)") Remove
 
-    button.bodyButton(onclick="addNew(this)") Add new art
+    button.bodyButton(onclick="addNew(this)") Add template
+    button.bodyButton(onclick="eraseNew(this)" disabled) Erase template
 
     for art in arts
         div.artOuterDiv
             div.artFileDiv
-                img(src=art.way height="250" style="display:inline-block")
-                input(name="file" type="file").fileInput
+                img(src=art.way height="280" style="display:inline-block")
             div.artInnerDiv
                 fieldset.fieldset
                     label.label Name of art
@@ -57,6 +59,9 @@ block content
                 fieldset.fieldset
                     label.label Maximum step
                     input.input(name="maxStep" type="number" value=art.maxStep)
+                fieldset.fieldset
+                    label.label Link
+                    input.input(name="link" type="name" value=art.way)
                 br
                 button.editButton(onclick="edit(this)") Edit
                 button.applyButton(onclick="apply(this)" disabled) Apply

@@ -15,7 +15,8 @@ block content
         button.applyButton(onclick="apply(this)" disabled) Apply
         button.removeButton(onclick="remove(this)") Remove
 
-    button.bodyButton(onclick="addNew(this)") Add new participant
+    button.bodyButton(onclick="addNew(this)") Add template
+    button.bodyButton(onclick="eraseNew(this)" disabled) Erase template
 
     for participant in participants
         div.participantDiv
