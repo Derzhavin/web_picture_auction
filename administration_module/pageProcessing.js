@@ -5,6 +5,8 @@ let buttonIdAndRoute = {
 }
 
 let route = document.location.href;
+let edited = [];
+let newRecordsNum = 0;
 
 $(document).ready(() => {
     setupHeader();
@@ -26,7 +28,7 @@ function hideInstance() {
     }
 }
 
-function activateButtonWhenInputsFilled(inputs, button) {
+function activateButtonWhenInputsFilled(inputs, buttons) {
     inputs.forEach(outerInput => outerInput.addEventListener('keyup', () => {
         let empty = false;
         inputs.forEach(innerInput => {
@@ -35,11 +37,9 @@ function activateButtonWhenInputsFilled(inputs, button) {
             }
         });
 
-        if (!empty) {
-            $(button).prop("disabled", false);
-        } else {
-            $(button).prop("disabled", true);
-        }
+        buttons.forEach(button => {
+            $(button).prop("disabled", empty);
+        });
     }));
 }
 
@@ -47,19 +47,28 @@ function edit(button) {
     $(button).prop("disabled", true);
     let inputs = $(button).parent("div").find("fieldset").children("input");
     $(button).next().prop("disabled", false);
+    $(button).next().next().prop("disabled", true);
     inputs.prop("disabled", false);
 
-    activateButtonWhenInputsFilled(inputs.get(), $(button).next());
+    activateButtonWhenInputsFilled(inputs.get(), [$(button).next()]);
+
+    edited.push($(button).parent("div").get()[0]);
+
+    if (route.includes('/arts')) {
+        addLinkOnImg($(button).closest("div.artOuterDiv").get()[0]);
+    }
 }
 
 function apply(button) {
-    $(button).prop("disabled", true);
-    $(button).prev().prop("disabled", false);
-    $(button).next().prop("disabled", false);
+    let divToFind = $(button).parent("div").get()[0];
+    let isEdited = edited.includes(divToFind);
+    let method = isEdited ? "PUT": "POST";
 
-    $(button).parent("div").find("form")[0].submit();
+    if (isEdited) {
+        edited.splice(divToFind, 1);
+    }
 
-    $(button).parent("div").find("fieldset").children("input").prop("disabled", true);
+    ajaxRequest(button, route, method);
 }
 
 function remove(button) {
@@ -70,9 +79,17 @@ function remove(button) {
         default:
             $(button).closest("div").remove();
     }
+
+    ajaxRequest(button, route, "DELETE");
 }
 
 function addNew(button) {
+    if (newRecordsNum === 0) {
+        $(button).next().prop("disabled", false);
+    }
+
+    newRecordsNum++;
+
     let instanceDiv = $("div:eq(2)").clone();
 
     instanceDiv.show();
@@ -82,30 +99,65 @@ function addNew(button) {
     instanceDiv.find("input.fileInput").get().forEach(fileInput => fileInput.onchange = addArt);
 
     instanceDiv.find("button").get().forEach((divButton) => {
-        if (!$(divButton).hasClass('removeButton')) {
-            $(divButton).prop("disabled", true);
-        }
+        $(divButton).prop("disabled", true);
 
         if ($(divButton).hasClass('applyButton')) {
-            activateButtonWhenInputsFilled(inputsInDiv.get(), divButton);
+            activateButtonWhenInputsFilled(inputsInDiv.get(), [divButton]);
         }
     });
 
-    $(button).after(instanceDiv);
+    if (route.includes("/arts")) {
+        addLinkOnImg(instanceDiv);
+    }
+    $(button).next().after(instanceDiv);
 }
 
-function addArt(event) {
-    let file = event.target.files[0];
-    let reader = new FileReader();
-    let preview = $(event.target).parent("div").find("img").get()[0];
+function addLinkOnImg(artDiv) {
+    let img = $(artDiv).find("img").get()[0];
+    let linkInput = $(artDiv).find("input[name=link]").get()[0];
+    let applyButton = $(artDiv).find("button.applyButton").get()[0];
+    applyButton.addEventListener("click", () => {
+        img.src = linkInput.value;
+    });
+}
 
-    reader.onloadend = function () {
-        preview.src = reader.result;
+function ajaxRequest(button, url, type) {
+    let closestDiv = null;
+
+    if (route.includes('/arts')) {
+        closestDiv = $(button).closest("div.artOuterDiv");
+    } else {
+        closestDiv = $(button).closest("div.artOuterDiv");
     }
 
-    if (file) {
-        reader.readAsDataURL(file);
-    } else {
-        preview.src="";
+    let inputsInDiv = closestDiv.find("input");
+    let data = {}
+
+    inputsInDiv.get().forEach(input => {
+        data[input.name] = input.value;
+    });
+
+    $.ajax({
+        url: url,
+        type: type,
+        dataType: "json",
+        data: data,
+        beforeSend: () =>  {
+            $(button).prop("disabled", true);
+            $(button).prev().prop("disabled", false);
+            $(button).next().prop("disabled", false);
+            $(button).parent("div").find("fieldset").children("input").prop("disabled", true);
+        },
+
+        success: (result) => {alert(result.msg);}
+    });
+}
+
+function eraseNew(button) {
+    $(button).next().remove()
+
+    newRecordsNum--;
+    if (newRecordsNum === 0) {
+        $(button).prop("disabled", true);
     }
 }

@@ -3,26 +3,25 @@ extends layout
 block content
     div.settingsDiv
         br
-        form(action="/change-settings" method="POST")
-            fieldset.fieldset
-                label.label Date to start auction
-                input.input(name="date" type="date" value=item.date disabled)
+        fieldset.fieldset
+            label.label Date to start auction
+            input.input(name="date" type="date" value=item.date disabled)
 
-            fieldset.fieldset
-                label.label Time to start auction
-                input.input(name="time" type="time" value=item.time disabled)
+        fieldset.fieldset
+            label.label Time to start auction
+            input.input(name="time" type="time" value=item.time disabled)
 
-            fieldset.fieldset
-                label.label Selling timeout
-                input.input(name="timeout" type="time" value=item.timeout disabled)
+        fieldset.fieldset
+            label.label Selling timeout
+            input.input(name="timeout" type="time" value=item.timeout disabled)
 
-            fieldset.fieldset
-                label.label Auction duration
-                input.input(name="duration" type="time" value=item.duration disabled)
+        fieldset.fieldset
+            label.label Auction duration
+            input.input(name="duration" type="time" value=item.duration disabled)
 
-            fieldset.fieldset
-                label.label Pause to inspect picture
-                input.input(name="pause_time" type="time" value=item.pause_time disabled)
+        fieldset.fieldset
+            label.label Pause to inspect picture
+            input.input(name="pause_time" type="time" value=item.pause_time disabled)
         br
         |
         button.editButton(onclick="edit(this)") Edit
