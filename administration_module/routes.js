@@ -18,7 +18,7 @@ router.get('/arts', (req,res) => {
 router.post('/arts', (req, res) => {
     console.log(req.body, "post");
 
-    if (!req.body || req.body === undefined) {
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
         sendFailure(res, 'art', 'add');
     } else {
         sendSuccess(res, 'Art', 'added');
@@ -28,7 +28,7 @@ router.post('/arts', (req, res) => {
 router.delete('/arts', (req, res) => {
     console.log(req.body, "delete");
 
-    if (!req.body || req.body === undefined) {
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
         sendFailure(res, 'art', 'remove');
     } else {
         sendSuccess(res, 'Art', 'removed');
@@ -37,7 +37,7 @@ router.delete('/arts', (req, res) => {
 
 router.put('/arts', (req, res) => {
     console.log(req.body, "put");
-    if (!req.body || req.body === undefined) {
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
         sendFailure(res, 'art', 'update');
     } else {
         sendSuccess(res, 'Art', 'updated');
@@ -64,7 +64,7 @@ router.get('/settings', (req,res) => {
 router.put('/settings', (req, res) => {
     console.log(req.body, "put");
 
-    if (!req.body || req.body === undefined) {
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
         sendFailure(res, 'settings', 'update');
     } else {
         sendSuccess(res, 'Settings', 'updated');
@@ -91,7 +91,7 @@ router.get('/participants', (req,res) => {
 
 router.post('/participants', (req, res) => {
     console.log(req.body, "post");
-    if (!req.body || req.body === undefined) {
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
         sendFailure(res, 'participant', 'add');
     } else {
         sendSuccess(res, 'Participant', 'added');
@@ -100,7 +100,7 @@ router.post('/participants', (req, res) => {
 
 router.delete('/participants', (req, res) => {
     console.log(req.body, "delete");
-    if (!req.body || req.body === undefined) {
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
         sendFailure(res, 'participant', 'remove');
     } else {
         sendSuccess(res, 'Participant', 'removed');
@@ -109,7 +109,7 @@ router.delete('/participants', (req, res) => {
 
 router.put('/participants', (req, res) => {
     console.log(req.body, "put");
-    if (!req.body || req.body === undefined) {
+    if (!req.body || req.body === undefined || Object.keys(req.body).length === 0) {
         sendFailure(res, 'participant', 'update');
     } else {
         sendSuccess(res, 'Participant', 'updated');

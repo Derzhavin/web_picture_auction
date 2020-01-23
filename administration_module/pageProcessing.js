@@ -127,7 +127,7 @@ function ajaxRequest(button, url, type) {
     if (route.includes('/arts')) {
         closestDiv = $(button).closest("div.artOuterDiv");
     } else {
-        closestDiv = $(button).closest("div.artOuterDiv");
+        closestDiv = $(button).closest("div");
     }
 
     let inputsInDiv = closestDiv.find("input");

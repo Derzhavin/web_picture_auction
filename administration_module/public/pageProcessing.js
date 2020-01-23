@@ -105,7 +105,6 @@ function addNew(button) {
 }
 
 function addLinkOnImg(artDiv) {
-  console.log(artDiv);
   let img = $(artDiv).find("img").get()[0];
   let linkInput = $(artDiv).find("input[name=link]").get()[0];
   let applyButton = $(artDiv).find("button.applyButton").get()[0];
@@ -120,7 +119,7 @@ function ajaxRequest(button, url, type) {
   if (route.includes('/arts')) {
     closestDiv = $(button).closest("div.artOuterDiv");
   } else {
-    closestDiv = $(button).closest("div.artOuterDiv");
+    closestDiv = $(button).closest("div");
   }
 
   let inputsInDiv = closestDiv.find("input");
