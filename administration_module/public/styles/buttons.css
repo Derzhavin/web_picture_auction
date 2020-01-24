@@ -34,36 +34,3 @@
 .bodyButton:hover:enabled {
   background-color: lightcoral;
 }
-.editButton {
-  cursor: pointer;
-  border-radius: 5px;
-  height: 30px;
-  font-size: 20px;
-  align-self: center;
-  background-color: lightblue;
-}
-.removeButton {
-  cursor: pointer;
-  border-radius: 5px;
-  height: 30px;
-  font-size: 20px;
-  align-self: center;
-  background-color: lightblue;
-}
-.applyButton {
-  cursor: pointer;
-  border-radius: 5px;
-  height: 30px;
-  font-size: 20px;
-  align-self: center;
-  background-color: lightblue;
-}
-.editButton:hover:enabled {
-  background-color: lightcoral;
-}
-.removeButton:hover:enabled {
-  background-color: lightcoral;
-}
-.applyButton:hover:enabled {
-  background-color: lightcoral;
-}

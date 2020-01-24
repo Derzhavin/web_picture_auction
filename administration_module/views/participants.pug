@@ -11,12 +11,13 @@ block content
             label.label Amount of money
             input.input(name="money" type="number" value="")
         br
-        button.editButton(onclick="edit(this)") Edit
-        button.applyButton(onclick="apply(this)" disabled) Apply
-        button.removeButton(onclick="remove(this)") Remove
+        button.bodyButton(name="edit" onclick="edit(this)" disabled) Edit
+        button.bodyButton(name="apply" onclick="apply(this)" disabled) Apply
+        button.bodyButton(name="remove" onclick="remove(this)" disabled) Remove
+        button.bodyButton(name="erase" onclick="erase(this)") Erase
+        img(name="check" src="/imgs/writing.png" height="23" style="margin-left: 20px")
 
     button.bodyButton(onclick="addNew(this)") Add template
-    button.bodyButton(onclick="eraseNew(this)" disabled) Erase template
 
     for participant in participants
         div.participantDiv
@@ -29,6 +30,8 @@ block content
                 label.label Amount of money
                 input.input(name="money" type="number" value=participant.money disabled)
             br
-            button.editButton(onclick="edit(this)") Edit
-            button.applyButton(onclick="apply(this)" disabled) Apply
-            button.removeButton(onclick="remove(this)") Remove
+            button.bodyButton(name="edit" onclick="edit(this)") Edit
+            button.bodyButton(name="apply" onclick="apply(this)" disabled) Apply
+            button.bodyButton(name="remove" onclick="remove(this)") Remove
+            button.bodyButton(name="erase" onclick="erase(this)" disabled) Erase
+            img(name="check" src="/imgs/success.png" height="23" style="margin-left: 20px")

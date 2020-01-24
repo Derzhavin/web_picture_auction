@@ -28,41 +28,44 @@ block content
                 label.label Link
                 input.input(name="way" type="name" value="")
             br
-            button.editButton(onclick="edit(this)") Edit
-            button.applyButton(onclick="apply(this)" disabled) Apply
-            button.removeButton(onclick="remove(this)") Remove
+            button.bodyButton(name="edit" onclick="edit(this)" disabled) Edit
+            button.bodyButton(name="apply" onclick="apply(this)" disabled) Apply
+            button.bodyButton(name="remove" onclick="remove(this)" disabled) Remove
+            button.bodyButton(name="erase" onclick="erase(this)" disabled) Erase
+            img(name="check" src="/imgs/writing.png" height="23" style="margin-left: 20px")
 
     button.bodyButton(onclick="addNew(this)") Add template
-    button.bodyButton(onclick="eraseNew(this)" disabled) Erase template
 
     for art in arts
         div.artOuterDiv
             div.artFileDiv
-                img(src=art.way height="280" style="display:inline-block")
+                img(name="art" src=art.way height="280" style="display:inline-block")
             div.artInnerDiv
                 fieldset.fieldset
                     label.label Name of art
-                    input.input(name="artName" type="name" value=art.artName)
+                    input.input(name="artName" type="name" value=art.artName disabled)
 
                 fieldset.fieldset
                     label.label Artist of art
-                    input.input(name="artist" type="name" value=art.artist)
+                    input.input(name="artist" type="name" value=art.artist disabled)
 
                 fieldset.fieldset
                     label.label Start price
-                    input.input(name="price" type="number" value=art.price)
+                    input.input(name="price" type="number" value=art.price disabled)
 
                 fieldset.fieldset
                     label.label Minimum step
-                    input.input(name="minStep" type="number" value=art.minStep)
+                    input.input(name="minStep" type="number" value=art.minStep disabled)
 
                 fieldset.fieldset
                     label.label Maximum step
-                    input.input(name="maxStep" type="number" value=art.maxStep)
+                    input.input(name="maxStep" type="number" value=art.maxStep disabled)
                 fieldset.fieldset
                     label.label Link
-                    input.input(name="way" type="name" value=art.way)
+                    input.input(name="way" type="name" value=art.way disabled)
                 br
-                button.editButton(onclick="edit(this)") Edit
-                button.applyButton(onclick="apply(this)" disabled) Apply
-                button.removeButton(onclick="remove(this)") Remove
+                button.bodyButton(name="edit" onclick="edit(this)") Edit
+                button.bodyButton(name="apply" onclick="apply(this)" disabled) Apply
+                button.bodyButton(name="remove" onclick="remove(this)") Remove
+                button.bodyButton(name="erase" onclick="erase(this)" disabled) Erase
+                img(name="check" src="/imgs/success.png" height="23" style="margin-left: 20px")
