@@ -24,5 +24,6 @@ block content
             input.input(name="pause_time" type="time" value=item.pause_time disabled)
         br
         |
-        button.editButton(onclick="edit(this)") Edit
-        button.applyButton(onclick="apply(this)" disabled) Apply
+        button.bodyButton(name="edit" onclick="edit(this)") Edit
+        button.bodyButton(name="apply" onclick="apply(this)" disabled) Apply
+        img(name="check" src="/imgs/success.png" height="23" style="margin-left: 20px")

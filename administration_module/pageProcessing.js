@@ -6,7 +6,6 @@ let buttonIdAndRoute = {
 
 let route = document.location.href;
 let edited = [];
-let newRecordsNum = 0;
 
 $(document).ready(() => {
     setupHeader();
@@ -28,7 +27,7 @@ function hideInstance() {
     }
 }
 
-function activateButtonWhenInputsFilled(inputs, buttons) {
+function activateButtonsWhenInputsFilled(inputs, buttons) {
     inputs.forEach(outerInput => outerInput.addEventListener('keyup', () => {
         let empty = false;
         inputs.forEach(innerInput => {
@@ -43,121 +42,147 @@ function activateButtonWhenInputsFilled(inputs, buttons) {
     }));
 }
 
-function edit(button) {
-    $(button).prop("disabled", true);
-    let inputs = $(button).parent("div").find("fieldset").children("input");
-    $(button).next().prop("disabled", false);
-    $(button).next().next().prop("disabled", true);
-    inputs.prop("disabled", false);
-
-    activateButtonWhenInputsFilled(inputs.get(), [$(button).next()]);
-
-    edited.push($(button).parent("div").get()[0]);
-
-    if (route.includes('/arts')) {
-        addLinkOnImg($(button).closest("div.artOuterDiv").get()[0]);
-    }
-}
-
-function apply(button) {
-    let divToFind = $(button).parent("div").get()[0];
-    let isEdited = edited.includes(divToFind);
-    let method = isEdited ? "PUT": "POST";
-
-    if (isEdited) {
-        edited.splice(divToFind, 1);
-    }
-
-    ajaxRequest(button, route, method);
-}
-
-function remove(button) {
-    switch($("title").text()){
-        case "Arts":
-            $(button).closest("div").parent("div").remove();
-            break;
-        default:
-            $(button).closest("div").remove();
-    }
-
-    ajaxRequest(button, route, "DELETE");
-}
-
-function addNew(button) {
-    if (newRecordsNum === 0) {
-        $(button).next().prop("disabled", false);
-    }
-
-    newRecordsNum++;
-
-    let instanceDiv = $("div:eq(2)").clone();
-
-    instanceDiv.show();
-
-    let inputsInDiv = instanceDiv.find("input.input");
-
-    instanceDiv.find("input.fileInput").get().forEach(fileInput => fileInput.onchange = addArt);
-
-    instanceDiv.find("button").get().forEach((divButton) => {
-        $(divButton).prop("disabled", true);
-
-        if ($(divButton).hasClass('applyButton')) {
-            activateButtonWhenInputsFilled(inputsInDiv.get(), [divButton]);
-        }
-    });
-
-    if (route.includes("/arts")) {
-        addLinkOnImg(instanceDiv);
-    }
-    $(button).next().after(instanceDiv);
-}
-
-function addLinkOnImg(artDiv) {
-    let img = $(artDiv).find("img").get()[0];
-    let linkInput = $(artDiv).find("input[name=link]").get()[0];
-    let applyButton = $(artDiv).find("button.applyButton").get()[0];
-    applyButton.addEventListener("click", () => {
-        img.src = linkInput.value;
-    });
-}
-
-function ajaxRequest(button, url, type) {
-    let closestDiv = null;
-
-    if (route.includes('/arts')) {
-        closestDiv = $(button).closest("div.artOuterDiv");
-    } else {
-        closestDiv = $(button).closest("div");
-    }
-
-    let inputsInDiv = closestDiv.find("input");
-    let data = {}
-
-    inputsInDiv.get().forEach(input => {
+function getDataFromDiv(div) {
+    let data = {};
+    $(div).find("input").get().forEach(input => {
         data[input.name] = input.value;
     });
 
+    return data;
+}
+
+function edit(button) {
+    let divForm = $(button).parent("div");
+    edited.push(divForm.get()[0]);
+
+    if (!route.includes("/settings")) {
+        $(divForm.find("button[name=remove]").get()[0]).prop("disabled", true);
+    }
+
+    let inputs = divForm.find("input").get();
+    inputs.forEach(input => {$(input).prop("disabled", false);});
+
+    let applyButton = divForm.find("button[name=apply]").get()[0];
+    $(applyButton).prop("disabled", false);
+    $(divForm.find("img[name=check]").get()[0]).prop("src", "/imgs/writing.png");
+
+    $(button).prop("disabled", true);
+
+    activateButtonsWhenInputsFilled(inputs, [applyButton]);
+}
+
+function remove(button) {
+    let divToRemove = null;
+
+    if (route.includes("/arts")) {
+        divToRemove =  $(button).closest("div").parent("div");
+    } else {
+        divToRemove = $(button).closest("div");
+    }
+
+    let img = divToRemove.find("img[name=check]").get()[0];
+
+
+    let success = (result) => {
+        if (result.status === 200) {
+            $(img).prop("src", "/imgs/success.png");
+            divToRemove.remove();
+        } else {
+            $(img).prop("src", "/imgs/failure.png");
+        }
+
+        alert(result.msg);
+    }
+
+    ajaxRequest(route, "DELETE", getDataFromDiv(divToRemove), () => addWaitGif(divToRemove), success);
+}
+
+function apply(button) {
+    let divToApply = $(button).parent("div");
+
+    let isSettings = route.includes("/settings");
+    let isEdited = edited.includes(divToApply.get()[0]);
+    let method = (isEdited || isSettings) ? "PUT": "POST";
+    let img = divToApply.find("img[name=check]").get()[0];
+
+    let removeButton = divToApply.find("button[name=remove]").get()[0];
+
+    if (!isSettings) {
+        $(removeButton).prop("disabled", true);
+    }
+
+    let success = (result) => {
+        if (result.status === 200) {
+            $(img).prop("src", "/imgs/success.png");
+
+            if (isEdited) {
+                edited.splice(divToApply, 1);
+            }
+
+            if (!isSettings) {
+                $(removeButton).prop("disabled", false);
+                divToApply.find("button[name=erase]").prop("disabled", true);
+            }
+
+            if (route.includes("/arts")) {
+                divToApply.parent("div").find("img").get()[0].src= divToApply.find("input[name=way]").get()[0].value;
+            }
+
+            $(button).prop("disabled", true);
+            $(divToApply.find("button[name=edit").get()[0]).prop("disabled", false);
+            divToApply.find("input").get().forEach(input => $(input).prop("disabled", true));
+
+        } else {
+            $(img).prop("src", "/imgs/failure.png");
+        }
+
+        alert(result.msg);
+    }
+
+    let beforeSend = () => {divToApply.find("button[name=erase]").prop("disabled", true); addWaitGif(divToApply);}
+    ajaxRequest(route, method, getDataFromDiv(divToApply), beforeSend, success);
+}
+
+function addNew(button) {
+    let instanceDiv = $("div:eq(2)").clone();
+    instanceDiv.show();
+
+    let inputs = instanceDiv.find("input").get();
+    let applyButton = instanceDiv.find("button[name=apply]").get()[0];
+    activateButtonsWhenInputsFilled(inputs, [applyButton]);
+
+    if (route.includes("/arts")) {
+        let img = $(instanceDiv).find("img").get()[0];
+        applyButton.addEventListener("click", () => {img.src = instanceDiv.find("input[name=way]").get()[0].value;});
+    }
+
+    $(button).after(instanceDiv);
+}
+
+function erase(button) {
+    let divToErase = null;
+
+    if (route.includes("/arts")) {
+        divToErase = $(button).parent("div.artOuterDiv");
+    } else {
+        divToErase = $(button).parent("div");
+    }
+
+    divToErase.remove();
+}
+function ajaxRequest(url, type, data, beforeSend, success) {
     $.ajax({
         url: url,
         type: type,
         dataType: "json",
         data: data,
-        beforeSend: () =>  {
-            $(button).prop("disabled", true);
-            $(button).prev().prop("disabled", false);
-            $(button).next().prop("disabled", false);
-            $(button).parent("div").find("fieldset").children("input").prop("disabled", true);
-        },
-
-        success: (result) => {alert(result.msg);}
+        beforeSend: beforeSend,
+        success: success
     });
 }
 
-function eraseNew(button) {
-    $(button).next().remove()
+function addWaitGif(div) {
+    let img = div.find("img[name=check]").get()[0];
 
-    newRecordsNum--;
-    if (newRecordsNum === 0) {
-        $(button).prop("disabled", true);
-    }
+    $(img).prop("src", "/imgs/wait.gif");
 }
