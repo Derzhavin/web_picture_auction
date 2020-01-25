@@ -5,9 +5,9 @@ var path = require('path');
 var router = express.Router();
 router.use(bodyParser.json());
 
-var users = require('./public/jsons/persons');
-var arts = require('./public/jsons/arts');
-var settings = require('./public/jsons/settings');
+var users = require('./dist/jsons/persons');
+var arts = require('./dist/jsons/arts');
+var settings = require('./dist/jsons/settings');
 
 var name = "";
 
