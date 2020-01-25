@@ -16,8 +16,8 @@ server.listen(3000,  ()  => {
     console.log('Listening on port 3000!');
 });
 
-var users = require('./public/jsons/persons');
-var arts = require('./public/jsons/arts');
-var settings = require('./public/jsons/settings');
+var users = require('./dist/jsons/persons');
+var arts = require('./dist/jsons/arts');
+var settings = require('./dist/jsons/settings');
 
 var io = require('socket.io')(server);
