@@ -16,7 +16,7 @@ server.listen(3000,  ()  => {
     console.log('Listening on port 3000!');
 });
 
-var users = require('./dist/jsons/persons');
+var users = require('./dist/jsons/participants');
 var arts = require('./dist/jsons/arts');
 var settings = require('./dist/jsons/settings');
 

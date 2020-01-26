@@ -1,0 +1,56 @@
+@header-height: 50px;
+@header-info-font-size: 25px;
+
+.header {
+  background-color: cornflowerblue;
+  width: 90%;
+  height: @header-height;
+  margin-left: 5%;
+  margin-right: 5%;
+  border-radius: 5px;
+  box-shadow: 0 0px 8px 0 rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+}
+
+.header h1 {
+  font-family: 'Merriweather';
+  margin-top: (@header-height - 32px) / 2;
+}
+
+.header span {
+  background: #008bcf;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-left: (@header-height - 32px);
+}
+
+.header-info {
+  font-family: "Arial Narrow";
+  font-size: @header-info-font-size;
+  margin-top: (@header-height - @header-info-font-size) / 2;
+  margin-left: 10%;
+}
+.header #auction-clocks {
+  .header-info;
+}
+
+.header #user {
+  .header-info;
+}
+
+.header #user:before {
+  content: "user: ";
+}
+
+.header #balance {
+  .header-info;
+}
+
+.header #balance:before {
+  content: "balance: ";
+}
+
+.header #balance:after {
+  content: "$";
+}

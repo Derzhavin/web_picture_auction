@@ -5,8 +5,9 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
-        hello: './src/js/hello.js',
-        hello1: './src/js/hello1.js'
+        index: './src/js/index.js',
+        admin: './src/js/admin.js',
+        user: './src/js/user.js',
     },
     output: {
         filename: 'js/[name].js',
