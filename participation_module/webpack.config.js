@@ -10,7 +10,8 @@ module.exports = {
         user: './src/js/user.js',
         dialog: './src/js/dialogs.js',
         headers: './src/js/headers.js',
-        containers: './src/js/containers.js'
+        containers: './src/js/containers.js',
+        tabs: './src/js/tabs.js',
     },
     output: {
         filename: 'js/[name].js',
