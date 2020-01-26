@@ -2,8 +2,26 @@ extends layout
 
 block content
     script(src="./js/admin.js")
+    script(src="./js/tabs.js")
+
     div.header
         span
             h1 Auction
         #auction-clocks 00:00:00
         #user admin
+
+    div.tabs
+        ul
+            li(name="participants")
+                a(href="#participants") participants
+            li(name="arts")
+                a(name="arts" href="#arts") arts
+            li(name="bidding")
+                a(href="#bidding") bidding
+
+            div.tab(id="participants")
+                include participants-tab
+            div.tab(id="arts")
+                include arts-tabs
+            div.tab(id="bidding")
+                include chat

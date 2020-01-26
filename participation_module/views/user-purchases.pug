@@ -3,10 +3,10 @@ extends user-layout
 block user-content
     for art in [1, 2, 3, 4, 5]
         div.art-box
-            div(id="img-holder").art-box-img
+            div.art-box-img
                 img(src="http://d2me0fuzw8a1c5.cloudfront.net/sites/default/files/styles/large/public/images/22922/krik_munka.jpeg")
 
-            div(id="art-info").art-box-info
+            div.art-box-info
                 p Name:
                     label(name="name") !
                 p Artist:

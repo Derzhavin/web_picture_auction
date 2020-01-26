@@ -1,10 +1,20 @@
-.art-box {
+.box {
   margin-top: 20px;
   border: 2px dashed black;
   width: 600px;
   height: 200px;
   display: flex;
   padding: 20px;
+}
+
+.box div label {
+  font-family: Arial;
+  font-size: 25px;
+  padding: 2px;
+}
+
+.art-box {
+  .box;
 }
 
 .art-box img {
@@ -21,9 +31,11 @@
   display: inline-block;
 }
 
-.art-box div label {
-  font-family: Arial;
-  font-size: 25px;
-  padding: 2px;
+.participant-box {
+  .box;
+  padding: 10px;
 }
 
+.participant-info {
+  display: inline-block;
+}
