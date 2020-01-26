@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    script(src="./js/user.js")
+    div.header
+        span
+            h1 Auction
+
+        button.redirectButton(name="bidding" onclick="location.href='/user-bidding'") Bidding
+        button.redirectButton(name="purchases" onclick="location.href='/user-purchases'") Purchases
+
+        #auction-clocks 00:00:00
+        #user #{user.username}
+        #balance #{user.money}

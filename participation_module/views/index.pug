@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    script(src="./js/index.js")
+
+    div.header
+        span
+            h1 Auction
+
+    form(action="/index" method="POST")
+        p
+        label(style="font-size:20px") Put in username
+        p
+        input(name="username" placeholder="username" style="font-size:20px" required)
+        p
+        button.bodyButton(type="submit") submit
