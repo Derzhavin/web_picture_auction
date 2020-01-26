@@ -1,1 +1,51 @@
 extends user-layout
+
+block user-content
+    br
+    div(id="art-dialog").dialog
+        h3 Current art
+        img(src="http://d2me0fuzw8a1c5.cloudfront.net/sites/default/files/styles/large/public/images/22922/krik_munka.jpeg")
+        div.art-info
+            p Name:
+                label !
+            p Artist:
+                label !
+            p Start price:
+                label !
+            p Current price:
+                label !
+            p Min step:
+                label !
+            p Max step:
+                label !
+            p Count down:
+                label 00:00:00
+
+    div(id="chat-dialog").dialog
+        h3 Bidding chat
+        div#chat.chat
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+            p A
+
+        input(type="number" placeholder='raising sum' required)
+        button.bodyButton(name="offer" disabled) Offer
+
+

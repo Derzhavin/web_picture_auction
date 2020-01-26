@@ -8,6 +8,8 @@ module.exports = {
         index: './src/js/index.js',
         admin: './src/js/admin.js',
         user: './src/js/user.js',
+        dialog: './src/js/dialogs.js',
+        headers: './src/js/headers.js'
     },
     output: {
         filename: 'js/[name].js',
