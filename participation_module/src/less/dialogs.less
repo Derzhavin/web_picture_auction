@@ -1,0 +1,45 @@
+@font-size: 20px;
+@img-height: 40%;
+@font-family: "Arial", "serif";
+
+.dialog {
+  font-size:25px;
+  display:table-cell;
+  border-radius: 10px;
+  border: 2px dashed black;
+  width: 500px;
+  height: 500px;
+}
+
+.dialog input {
+  font-size: @font-size;
+  font-family: @font-family;
+  margin-left: 10px;
+  width: 150px;
+  position: relative;
+}
+
+.dialog h3 {
+  font-family: @font-family;
+}
+
+.dialog p {
+  font-size: @font-size;
+  font-family: @font-family;
+}
+.chat {
+  overflow-y: scroll;
+  height: 480px;
+  width: 480px;
+  padding: 10px;
+  font-family: @font-family;
+}
+
+.dialog img {
+  height: 40%;
+}
+
+.art-info {
+  height: 100% - @img-height;
+  padding: 10px;
+}
