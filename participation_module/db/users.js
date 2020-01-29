@@ -1,11 +1,16 @@
-var participants = require('./jsons/participants');
+var records = require('./jsons/participants');
 var arts = require('./jsons/arts');
 var settings = require('./jsons/settings');
 
-var records = [
-    { id: 1, username: 'jack', password: 'secret', displayName: 'Jack', emails: [ { value: 'jack@example.com' } ] }
-    , { id: 2, username: 'jill', password: 'birthday', displayName: 'Jill', emails: [ { value: 'jill@example.com' } ] }
-];
+var adminKey = 'admin';
+
+records.forEach((record, index) => {
+    record.id = index + 1;
+    record.password = '1234';
+})
+
+records.push({username: 'admin', id: records.length + 1, password: adminKey});
+exports.adminKey = adminKey;
 
 exports.findById = function(id, cb) {
     process.nextTick(function() {
