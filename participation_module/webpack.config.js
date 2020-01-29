@@ -12,6 +12,7 @@ module.exports = {
         headers: './src/js/headers.js',
         containers: './src/js/containers.js',
         tabs: './src/js/tabs.js',
+        socketClient: './src/js/socketClient.js'
     },
     output: {
         filename: 'js/[name].js',
@@ -19,7 +20,7 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(),
         new CopyPlugin([
-            {from:'src/imgs',to:'imgs'}
+            {from:'src/imgs',to:'imgs'},
         ]),
     ],
     module: {
