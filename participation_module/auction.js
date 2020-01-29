@@ -50,7 +50,7 @@ function Auction(settings, items) {
         this.stage = stage.before;
         setTimeout(() => {
             this.stage = stage.inProgress;
-            sockets.emit('auction started');
+            sockets.emit('auction started', {endTime: this.endTime});
 
             setTimeout(() => {
                 this.stage = stage.finished;
@@ -60,8 +60,21 @@ function Auction(settings, items) {
 
         sockets.on('connection', socket => {
             socket.on('new connection', data => {
+                connections[socket.id] = data.username;
                 sockets.emit('new connection', {username: data.username});
             });
+
+            if (this.stage === stage.before) {
+                socket.emit('auction start time', {startTime: this.startTime});
+            }
+
+            if (this.stage === stage.inProgress) {
+                socket.emit('auction started', {endTime: this.endTime});
+            }
+
+            if (this.stage === stage.finished) {
+                socket.emit('auction finished');
+            }
 
             socket.on('disconnect', data => {
                 sockets.emit('some user disconnected', {username: connections[socket.id]});
