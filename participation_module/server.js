@@ -16,4 +16,15 @@ server.listen(3000,  ()  => {
     console.log('Listening on port 3000!');
 });
 
+var io = require('socket.io')(server);
+
+var db = require('./db');
+const {Auction} = require('./auction');
+
+var connections = {};
+
+var auction = new Auction(db.settings, db.arts);
+
+auction.start(io.sockets, connections);
+
 module.exports = server;
