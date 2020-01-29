@@ -1,24 +1,20 @@
 $(() => {
     var socket = io();
 
-    var $form = $("#chat-dialog");
-    var $name = $("#user");
-    var $textarea = $("#chat");
+    let username = $('#user').text();
 
-    $form.submit(function(event) {
-        event.preventDefault();
-        socket.emit('send mess', {mess: $textarea.val(), name: $name.val()});
-        // Очищаем поле с сообщением
-        $textarea.val('');
+    socket.emit('new connection', {username: username});
+
+    socket.on('new connection', data => {
+        sendMsg(`${data.username} joined chat!`);
     });
 
-    // Здесь отслеживаем событие 'add mess',
-    // которое должно приходить из сокета в случае добавления нового сообщения
-    socket.on('add mess', function(data) {
-        // Встраиваем полученное сообщение в блок с сообщениями
-        // У блока с сообщением будет тот класс, который соответвует пользователю что его отправил
-        $textarea.append("<p> <b>" + data.name + "</b>: " + data.mess + "</p>");
-    });
-
+    socket.on('user disconnected', data => {
+        console.log('some user disconnected')
+        sendMsg(`${data.username} left chat!`);
+    })
 });
 
+function sendMsg(msg) {
+    $('#chat').append("<p>" + msg);
+}

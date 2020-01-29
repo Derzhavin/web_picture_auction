@@ -18,17 +18,18 @@ server.listen(3000,  ()  => {
 
 var io = require('socket.io')(server);
 
-io.sockets.on('connection', (socket) => {
-    console.log(`new connection ${socket}`);
+var connections = {};
 
-    socket.on('disconnect', (data) => {
-        console.log(`${socket} disconnected`);
+io.sockets.on('connection', socket => {
+    socket.on('new connection', data => {
+        connections[socket.id] = data.username;
+        io.sockets.emit('new connection', {username: data.username});
     });
 
-    socket.on('send mess', (data) => {
-        io.sockets.emit('add mess', {mess: data.mess, name: data.name});
+    socket.on('disconnect', data => {
+        io.sockets.emit('some user disconnected', {username: connections[socket.id]});
+        delete connections[socket.id];
     });
-
 });
 
 module.exports = server;
