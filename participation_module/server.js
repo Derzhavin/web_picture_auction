@@ -18,18 +18,13 @@ server.listen(3000,  ()  => {
 
 var io = require('socket.io')(server);
 
+var db = require('./db');
+const {Auction} = require('./auction');
+
 var connections = {};
 
-io.sockets.on('connection', socket => {
-    socket.on('new connection', data => {
-        connections[socket.id] = data.username;
-        io.sockets.emit('new connection', {username: data.username});
-    });
+var auction = new Auction(db.settings, db.arts);
 
-    socket.on('disconnect', data => {
-        io.sockets.emit('some user disconnected', {username: connections[socket.id]});
-        delete connections[socket.id];
-    });
-});
+auction.start(io.sockets, connections);
 
 module.exports = server;
