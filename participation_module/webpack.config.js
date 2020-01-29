@@ -5,7 +5,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
-        index: './src/js/index.js',
+        auth: './src/js/auth.js',
         admin: './src/js/admin.js',
         user: './src/js/user.js',
         dialog: './src/js/dialogs.js',
@@ -19,8 +19,7 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(),
         new CopyPlugin([
-            {from:'src/imgs',to:'imgs'},
-            {from:'src/jsons',to:'jsons'}
+            {from:'src/imgs',to:'imgs'}
         ]),
     ],
     module: {

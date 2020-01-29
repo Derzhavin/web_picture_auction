@@ -1,88 +1,53 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var fs = require('fs');
-var path = require('path');
+const express = require('express');
+var passport = require('passport');
+
+var adminKey = require('./db/users').adminKey;
+
 var router = express.Router();
-router.use(bodyParser.json());
 
-var users = require('./dist/jsons/participants');
-var arts = require('./dist/jsons/arts');
-var settings = require('./dist/jsons/settings');
+router.get('/auth', (req, res) => {
+    console.log(req.body, 'get', '/auth');
 
-var currentUser = null;
-
-router.get('/index', (req, res) => {
-    console.log(req.body, 'get', '/index');
-
-    res.render('index');
+    res.render('auth');
 });
 
-router.post('/index', (req, res) => {
-    console.log(req.body, 'post', '/index');
-
-    if (req.body.username == null) {
-        res.end('Request without username!');
-        return;
-    }
+router.post('/auth', passport.authenticate('local', { failureRedirect: '/auth' }), (req, res) => {
+    console.log(req.body, 'post', '/auth');
 
     if (req.body.username === 'admin') {
-        res.redirect('/admin');
-        return;
+        return res.redirect('/admin');
     }
 
-    for(let user of users) {
-        if (user.username === req.body.username) {
-            currentUser = user;
-            res.redirect('/user-bidding');
-        }
-    }
-
-    res.end('There is no user with such name!');
+    res.redirect('/user-bidding');
 });
 
-router.get('/admin', (req, res) => {
-    console.log(req.body, 'get', '/admin');
+router.get('/admin', require('connect-ensure-login').ensureLoggedIn('/auth'), (req, res) => {
+    console.log(req.user, 'get', '/admin');
 
+    if (req.user.username !== 'admin' && req.user.password !== adminKey) {
+        return res.send("It is admin page!");
+    }
     res.render('admin');
 });
 
-router.get('/user-bidding', (req, res) => {
+router.get('/user-bidding' , require('connect-ensure-login').ensureLoggedIn('/auth'), (req, res) => {
     console.log(req.body, 'get', '/user-bidding');
 
-    res.render('user-bidding', {user: currentUser});
+    if (req.user.username === 'admin' || req.user.password === adminKey) {
+        return res.send("It is participant page!");
+    }
+
+    res.render('user-bidding', {user: req.user});
 });
 
-router.post('/user-purchases', (req, res) => {
-    console.log(req.body, 'post', '/user-purchases');
-
-    if (isBodyEmpty(req.body)) {
-        res.send('Empty request!');
-        return;
-    }
-
-    if (req.body.user == null) {
-        res.send('Empty user!');
-        return;
-    }
-    
-    if (req.body.user.money == null || req.body.user.money == null) {
-        res.send('Empty user item was sent!');
-        return;
-    }
-    
-    currentUser = req.body.user;
-
-    res.redirect('/user-purchases');
-});
-
-router.get('/user-purchases', (req,res) => {
+router.get('/user-purchases', require('connect-ensure-login').ensureLoggedIn('/auth'), (req,res) => {
     console.log(req.body, 'get', '/user-purchases');
 
-    res.render('user-purchases', {user: currentUser});
-});
+    if (req.user.username === 'admin' || req.user.password === adminKey) {
+        return res.send("It is participant page!");
+    }
 
-function isBodyEmpty(body) {
-    return !body || body === undefined || Object.keys(body).length === 0;
-}
+    res.render('user-purchases', {user: req.user});
+});
 
 module.exports = router;
