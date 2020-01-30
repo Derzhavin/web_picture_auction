@@ -14,23 +14,23 @@ $(() => {
     socket.on('some user disconnected', data => {
         showMsg(data.username, `${data.username} left chat!`);
     });
-    
-    socket.on('auction finished', data => {
-        showMsg('server', 'Auction finished!');
-        document.getElementById("auction-clocks").innerText = "00:00:00";
-    });
 
-    
-    socket.on('auction start time', data => {
-        startStopwatch(data.startTime - Date.now(), 1000, (currentTimeTimer) => {
-               document.getElementById("auction-clocks").innerText = getCountDown(currentTimeTimer);
-        });
+    socket.on('auction before', data => {
+        visualizeAuctionClocks(data.startTime - Date.now());
     });
 
     socket.on('auction started', data => {
-        startStopwatch(data.endTime - Date.now(), 1000, (currentTimeTimer) => {
-            document.getElementById("auction-clocks").innerText = getCountDown(currentTimeTimer);
-        });
+        showMsg('server', 'Auction started!');
+        visualizeAuctionClocks(data.endTime - Date.now());
+    });
+
+    socket.on('auction inProgress', data => {
+        visualizeAuctionClocks(data.endTime - Date.now());
+    });
+
+    socket.on('auction finished', data => {
+        showMsg('server', 'Auction finished!');
+        document.getElementById("auction-clocks").innerText = "00:00:00";
     });
 });
 
@@ -60,4 +60,10 @@ function startStopwatch(timer, freq, callback) {
     setTimeout(() => {
         clearInterval(intervalId)
     }, timer);
+}
+
+function visualizeAuctionClocks(timer) {
+    startStopwatch(timer, 1000, (currentTimeTimer) => {
+        document.getElementById("auction-clocks").innerText = getCountDown(currentTimeTimer);
+    });
 }
