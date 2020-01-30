@@ -36,15 +36,15 @@ function Auction(settings, items) {
     this.currentItem = items[0];
     this.items = items;
 
-    this.nextItem = () => {
+    this.nextItem = (sockets) => {
         this.state = state.acquaintance;
+        sockets.emit('item acquaintance', {item: this.currentItem});
+
         setTimeout(() => {
             this.state = state.sale;
+            sockets.emit('item sale');
         }, this.pause);
     };
-
-    console.log((this.startTime - this.programStartedTime) / 1000 / 60)
-    console.log((this.endTime - this.startTime) / 1000 / 60)
 
     this.start = (sockets, connections) => {
         this.stage = stage.before;
@@ -74,6 +74,10 @@ function Auction(settings, items) {
                 if (this.stage === stage.finished) {
                     socket.emit('auction finished');
                 }
+            });
+
+            socket.on('offer', data => {
+                console.log('OFFER', data);
             });
 
             socket.on('disconnect', data => {

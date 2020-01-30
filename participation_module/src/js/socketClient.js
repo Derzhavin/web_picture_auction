@@ -1,7 +1,7 @@
 $(() => {
     var socket = io();
-    var startTime = null,
-        endTime = null;
+
+    setupEvents(socket);
 
     let username = $('#user').text();
 
@@ -69,4 +69,13 @@ function visualizeAuctionClocks(timer) {
     startStopwatch(timer, 1000, (currentTimeTimer) => {
         document.getElementById("auction-clocks").innerText = getCountDown(currentTimeTimer);
     });
+}
+
+function setupEvents(socket) {
+    $("button[name='offer']").click(() => offer(socket));
+}
+
+function offer(socket) {
+    console.log($("input[name='raising-sum']"));
+    socket.emit('offer', {raisingSum: parseInt($("input[name='raising-sum']").val()), money: parseInt($("#balance").text())});
 }
