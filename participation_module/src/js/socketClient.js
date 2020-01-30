@@ -35,6 +35,24 @@ $(() => {
         document.getElementById("auction-clocks").innerText = "00:00:00";
         $('button[name="offer"]').attr('disabled', true);
     });
+
+    socket.on('new item acquaintance', data => {
+        showMsg('server', 'new art acquaintance!');
+        $("#art-dialog").find("label[name='count-down']").val("00:00:00");
+        setArtInfo(data);
+        startStopwatch(data.pause, 1000, (currentTimeTimer) => {
+            $("#art-dialog").find("label[name='time-to-acquaintance']").val(getCountDown(currentTimeTimer));
+        });
+    });
+
+    socket.on('new item sale', data => {
+        showMsg('server', 'new art sale!');
+        $("#art-dialog").find("label[name='time-to-acquaintance']").val("00:00:00");
+        setArtInfo(data);
+        startStopwatch(data.pause, 1000, (currentTimeTimer) => {
+            $("#art-dialog").find("label[name='count-down']").val(getCountDown(currentTimeTimer));
+        });
+    });
 });
 
 function showMsg(author, msg) {
@@ -78,4 +96,14 @@ function setupEvents(socket) {
 function offer(socket) {
     console.log($("input[name='raising-sum']"));
     socket.emit('offer', {raisingSum: parseInt($("input[name='raising-sum']").val()), money: parseInt($("#balance").text())});
+}
+
+function setArtInfo(data) {
+    $("#art-dialog").find("img").get()[0].src = data.item.way;
+    $("#art-dialog").find("label[name='name']").get()[0].innerText = data.item.artName;
+    $("#art-dialog").find("label[name='artist']").get()[0].innerText = data.item.artist;
+    $("#art-dialog").find("label[name='start-price']").get()[0].innerText = data.item.price;
+    $("#art-dialog").find("label[name='current-price']").get()[0].innerText = data.item.price;
+    $("#art-dialog").find("label[name='min-step']").get()[0].innerText = data.item.minStep;
+    $("#art-dialog").find("label[name='max-step']").get()[0].innerText = data.item.maxStep;
 }

@@ -1,3 +1,5 @@
+const EventEmitter = require('events');
+
 const stage = {
     before: 0x0,
     inProgress: 0x1,
@@ -20,43 +22,57 @@ function Auction(settings, items) {
         return startTime + parseInt(timeArr[0]) * 60 * 60 * 1000 + parseInt(timeArr[1]) * 60 * 1000;
     };
 
-    let initPauseTime = (pauseTime) => {
+    let initInSecHoursTime = (pauseTime) => {
         let timeArr = pauseTime.split(':');
         return parseInt(timeArr[0]) * 60 * 1000 + parseInt(timeArr[1]) * 1000;
     };
 
+    let createItemIterator = (sockets) => {
+        const itemIterator = new EventEmitter();
+        itemIterator.on('sell item', () => {
+            this.currentItemInd++;
+            this.state = state.acquaintance;
+
+            sockets.emit('new item acquaintance', {item: this.items[this.currentItemInd], pause: this.pause});
+            setTimeout(() => {
+                this.state = state.sale;
+                sockets.emit('new item sale', {item: this.items[this.currentItemInd], timeout: this.timeout});
+            }, this.pause);
+        });
+    
+        return itemIterator;
+    };
+    
     this.startTime = initStartTime(settings.date, settings.time);
     this.endTime = initEndTime(this.startTime, settings.duration);
     this.programStartedTime = Date.now();
-
-    this.pause = initPauseTime(settings.pause_time);
+    this.pause = initInSecHoursTime(settings.pause_time);
+    this.timeout = initInSecHoursTime(settings.timeout);
 
     this.stage = stage.before;
     this.state = state.acquaintance;
-    this.currentItem = items[0];
+    this.currentItemInd = -1;
     this.items = items;
-
-    this.nextItem = (sockets) => {
-        this.state = state.acquaintance;
-        sockets.emit('item acquaintance', {item: this.currentItem});
-
-        setTimeout(() => {
-            this.state = state.sale;
-            sockets.emit('item sale');
-        }, this.pause);
-    };
-
-    this.start = (sockets, connections) => {
+    
+    this.planStages = (sockets) => {
         this.stage = stage.before;
         setTimeout(() => {
             this.stage = stage.inProgress;
             sockets.emit('auction started', {endTime: this.endTime});
+
+            this.itemIterator.emit('sell item');
 
             setTimeout(() => {
                 this.stage = stage.finished;
                 sockets.emit('auction finished');
             }, this.endTime - this.startTime);
         }, this.startTime - this.programStartedTime);
+    };
+
+    this.start = (sockets, connections) => {
+        this.planStages(sockets);
+
+        this.itemIterator = createItemIterator(sockets);
 
         sockets.on('connection', socket => {
             socket.on('new connection', data => {
