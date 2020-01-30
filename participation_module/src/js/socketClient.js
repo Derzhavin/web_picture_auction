@@ -22,15 +22,18 @@ $(() => {
     socket.on('auction started', data => {
         showMsg('server', 'Auction started!');
         visualizeAuctionClocks(data.endTime - Date.now());
+        $('button[name="offer"]').attr('disabled', false);
     });
 
     socket.on('auction inProgress', data => {
         visualizeAuctionClocks(data.endTime - Date.now());
+        $('button[name="offer"]').attr('disabled', false);
     });
 
     socket.on('auction finished', data => {
         showMsg('server', 'Auction finished!');
         document.getElementById("auction-clocks").innerText = "00:00:00";
+        $('button[name="offer"]').attr('disabled', true);
     });
 });
 
