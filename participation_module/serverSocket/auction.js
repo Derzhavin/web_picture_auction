@@ -56,8 +56,21 @@ function Auction(settings, items) {
     
     this.planStages = (io, connectionNotifier) => {
         let msg = "";
-        this.stage = stage.before;
-        setTimeout(() => {
+
+        let goToBefore = () => {
+            this.stage = stage.before;
+            setTimeout(() => goToInProgress(), this.startTime - this.programStartedTime);
+        };
+
+        let goToFinished = () => {
+            this.stage = stage.finished;
+
+            msg = 'Auction finished!';
+            io.sockets.emit('auction finished', {msg: msg});
+            connectionNotifier.saveMsg("", msg);
+        };
+
+        let goToInProgress = () => {
             this.stage = stage.inProgress;
 
             msg = 'Auction started!';
@@ -65,22 +78,20 @@ function Auction(settings, items) {
             connectionNotifier.saveMsg("", msg);
 
             this.itemIterator.emit('sell item');
+            setTimeout(() => goToFinished(), this.endTime - this.startTime);
+        };
 
-            setTimeout(() => {
-                this.stage = stage.finished;
+        if (this.startTime > this.programStartedTime) {
+            goToBefore();
+        } else if (this.endTime > this.programStartedTime) {
+            goToInProgress();
+        } else {
+            goToFinished();
+        }
 
-                msg = 'Auction finished!';
-                io.sockets.emit('auction finished', {msg: msg});
-                connectionNotifier.saveMsg("", msg);
-            }, this.endTime - this.startTime);
-        }, this.startTime - this.programStartedTime);
     };
 
-    this.start = (io, connectionNotifier) => {
-        this.planStages(io, connectionNotifier);
-
-        this.itemIterator = createItemIterator(io);
-
+    this.bringUpToDateUser = (io) => {
         io.sockets.on('connection', socket => {
             socket.on('new connection', data => {
                 if (this.stage === stage.before) {
@@ -95,12 +106,25 @@ function Auction(settings, items) {
                     socket.emit('auction finished');
                 }
             });
+        });
+    };
 
+    this.doBidding = (io, connectionNotifier) => {
+        io.sockets.on('connection', socket => {
             socket.on('offer', data => {
                 console.log('OFFER', data);
             });
         });
+    };
 
+    this.start = (io, connectionNotifier) => {
+        this.itemIterator = createItemIterator(io);
+
+        console.log(this.startTime - this.programStartedTime);
+        console.log(this.endTime - this.startTime);
+        this.planStages(io, connectionNotifier);
+        this.bringUpToDateUser(io);
+        this.doBidding(io, connectionNotifier);
     };
 }
 

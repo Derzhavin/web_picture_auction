@@ -27,6 +27,6 @@ var auction = new Auction(db.settings, db.arts);
 var connectionNotifier = new ConnectionNotifier();
 
 connectionNotifier.start(io);
-//auction.start(io, connectionNotifier);
+auction.start(io, connectionNotifier);
 
 module.exports = server;
