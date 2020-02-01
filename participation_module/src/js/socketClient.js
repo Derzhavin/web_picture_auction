@@ -6,21 +6,12 @@ $(() => {
     let username = $('#user').text();
 
     socket.emit('new connection', {username: username});
-
-    socket.on('new connection', data => {
-        showMsg(data.username, `${data.username} joined chat!`);
-    });
-
-    socket.on('some user disconnected', data => {
-        showMsg(data.username, `${data.username} left chat!`);
-    });
-
-    socket.on('auction before', data => {
-        visualizeAuctionClocks(data.startTime - Date.now());
-    });
+    socket.on('about connection', data => {showMsg("", data.msg);});
+    socket.on('chat history', data => data.chat.forEach(line => showMsg(line.username, line.msg)));
+    socket.on('auction before', data => {visualizeAuctionClocks(data.startTime - Date.now());});
 
     socket.on('auction started', data => {
-        showMsg('server', 'Auction started!');
+        showMsg('', data.msg);
         visualizeAuctionClocks(data.endTime - Date.now());
         $('button[name="offer"]').attr('disabled', false);
     });
@@ -31,26 +22,24 @@ $(() => {
     });
 
     socket.on('auction finished', data => {
-        showMsg('server', 'Auction finished!');
+        showMsg('', data.msg);
         document.getElementById("auction-clocks").innerText = "00:00:00";
         $('button[name="offer"]').attr('disabled', true);
     });
 
     socket.on('new item acquaintance', data => {
-        showMsg('server', 'new art acquaintance!');
-        $("#art-dialog").find("label[name='count-down']").val("00:00:00");
+        showMsg('', 'new art acquaintance!');
         setArtInfo(data);
         startStopwatch(data.pause, 1000, (currentTimeTimer) => {
-            $("#art-dialog").find("label[name='time-to-acquaintance']").val(getCountDown(currentTimeTimer));
+            $("#art-dialog").find("label[name='time-to-acquaintance']").get()[0].innerText = getCountDown(currentTimeTimer);
         });
     });
 
     socket.on('new item sale', data => {
-        showMsg('server', 'new art sale!');
-        $("#art-dialog").find("label[name='time-to-acquaintance']").val("00:00:00");
+        showMsg('', 'new art sale!');
         setArtInfo(data);
-        startStopwatch(data.pause, 1000, (currentTimeTimer) => {
-            $("#art-dialog").find("label[name='count-down']").val(getCountDown(currentTimeTimer));
+        startStopwatch(data.timeout, 1000, (currentTimeTimer) => {
+            $("#art-dialog").find("label[name='count-down']").get()[0].innerText = getCountDown(currentTimeTimer);
         });
     });
 });
@@ -79,6 +68,7 @@ function startStopwatch(timer, freq, callback) {
     }, freq);
 
     setTimeout(() => {
+        callback(currentTimeTimer);
         clearInterval(intervalId)
     }, timer);
 }
@@ -104,6 +94,4 @@ function setArtInfo(data) {
     $("#art-dialog").find("label[name='artist']").get()[0].innerText = data.item.artist;
     $("#art-dialog").find("label[name='start-price']").get()[0].innerText = data.item.price;
     $("#art-dialog").find("label[name='current-price']").get()[0].innerText = data.item.price;
-    $("#art-dialog").find("label[name='min-step']").get()[0].innerText = data.item.minStep;
-    $("#art-dialog").find("label[name='max-step']").get()[0].innerText = data.item.maxStep;
 }

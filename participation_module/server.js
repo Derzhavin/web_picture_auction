@@ -19,12 +19,14 @@ server.listen(3000,  ()  => {
 var io = require('socket.io')(server);
 
 var db = require('./db');
-const {Auction} = require('./auction');
 
-var connections = {};
+const {Auction} = require('./serverSocket/auction');
+const {ConnectionNotifier} = require('./serverSocket/connectionNotifier');
 
 var auction = new Auction(db.settings, db.arts);
+var connectionNotifier = new ConnectionNotifier();
 
-auction.start(io.sockets, connections);
+connectionNotifier.start(io);
+//auction.start(io, connectionNotifier);
 
 module.exports = server;
