@@ -32,11 +32,13 @@ function Auction(settings, items) {
         itemIterator.on('sell item', () => {
             this.currentItemInd++;
             this.state = state.acquaintance;
+            this.endTimeAcquaintanceItem = Date.now() + this.pause;
 
-            io.sockets.emit('new item acquaintance', {item: this.items[this.currentItemInd], pause: this.pause});
+            io.sockets.emit('knock me');
             setTimeout(() => {
                 this.state = state.sale;
-                io.sockets.emit('new item sale', {item: this.items[this.currentItemInd], timeout: this.timeout});
+                this.endTimeSaleItem = Date.now() + this.timeout;
+                io.sockets.emit('knock me');
             }, this.pause);
         });
     
@@ -48,7 +50,8 @@ function Auction(settings, items) {
     this.programStartedTime = Date.now();
     this.pause = initInSecHoursTime(settings.pause_time);
     this.timeout = initInSecHoursTime(settings.timeout);
-
+    this.endTimeAcquaintanceItem = 0;
+    this.endTimeSaleItem = 0;
     this.stage = stage.before;
     this.state = state.acquaintance;
     this.currentItemInd = -1;
@@ -64,19 +67,16 @@ function Auction(settings, items) {
 
         let goToFinished = () => {
             this.stage = stage.finished;
-
-            msg = 'Auction finished!';
-            io.sockets.emit('auction finished', {msg: msg});
-            connectionNotifier.saveMsg("", msg);
+            io.sockets.emit('auction stage', {msg: 'Auction finished!'});
+            io.sockets.emit('knock me');
+            connectionNotifier.saveMsg("", 'Auction finished!');
         };
 
         let goToInProgress = () => {
             this.stage = stage.inProgress;
-
-            msg = 'Auction started!';
-            io.sockets.emit('auction started', {endTime: this.endTime, msg: msg});
-            connectionNotifier.saveMsg("", msg);
-
+            io.sockets.emit('auction stage', {msg: 'Auction started!'});
+            io.sockets.emit('knock me');
+            connectionNotifier.saveMsg("", 'Auction started!');
             this.itemIterator.emit('sell item');
             setTimeout(() => goToFinished(), this.endTime - this.startTime);
         };
@@ -88,18 +88,29 @@ function Auction(settings, items) {
         } else {
             goToFinished();
         }
-
     };
 
     this.bringUpToDateUser = (io) => {
         io.sockets.on('connection', socket => {
-            socket.on('new connection', data => {
+            socket.on('bring up to date', () => {
                 if (this.stage === stage.before) {
                     socket.emit('auction before', {startTime: this.startTime});
                 }
 
                 if (this.stage === stage.inProgress) {
                     socket.emit('auction inProgress', {endTime: this.endTime});
+
+                    if (this.state === state.acquaintance) {
+                        socket.emit('new item acquaintance', {
+                            item: this.items[this.currentItemInd], endTimeAcquaintanceItem: this.endTimeAcquaintanceItem
+                        });
+                    }
+
+                    if (this.state === state.sale) {
+                        socket.emit('new item sale', {
+                            item: this.items[this.currentItemInd], endTimeSaleItem: this.endTimeSaleItem
+                        });
+                    }
                 }
 
                 if (this.stage === stage.finished) {
@@ -120,8 +131,6 @@ function Auction(settings, items) {
     this.start = (io, connectionNotifier) => {
         this.itemIterator = createItemIterator(io);
 
-        console.log(this.startTime - this.programStartedTime);
-        console.log(this.endTime - this.startTime);
         this.planStages(io, connectionNotifier);
         this.bringUpToDateUser(io);
         this.doBidding(io, connectionNotifier);

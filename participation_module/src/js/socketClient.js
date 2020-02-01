@@ -1,20 +1,17 @@
 $(() => {
     var socket = io();
-
     setupEvents(socket);
 
     let username = $('#user').text();
 
     socket.emit('new connection', {username: username});
+    socket.emit('bring up to date');
+
     socket.on('about connection', data => {showMsg("", data.msg);});
     socket.on('chat history', data => data.chat.forEach(line => showMsg(line.username, line.msg)));
     socket.on('auction before', data => {visualizeAuctionClocks(data.startTime - Date.now());});
-
-    socket.on('auction started', data => {
-        showMsg('', data.msg);
-        visualizeAuctionClocks(data.endTime - Date.now());
-        $('button[name="offer"]').attr('disabled', false);
-    });
+    socket.on('auction stage', data => {showMsg('', data.msg);});
+    socket.on('knock me', () => socket.emit('bring up to date'));
 
     socket.on('auction inProgress', data => {
         visualizeAuctionClocks(data.endTime - Date.now());
@@ -22,7 +19,6 @@ $(() => {
     });
 
     socket.on('auction finished', data => {
-        showMsg('', data.msg);
         document.getElementById("auction-clocks").innerText = "00:00:00";
         $('button[name="offer"]').attr('disabled', true);
     });
@@ -30,7 +26,7 @@ $(() => {
     socket.on('new item acquaintance', data => {
         showMsg('', 'new art acquaintance!');
         setArtInfo(data);
-        startStopwatch(data.pause, 1000, (currentTimeTimer) => {
+        startStopwatch(data.endTimeAcquaintanceItem - Date.now(), 1000, (currentTimeTimer) => {
             $("#art-dialog").find("label[name='time-to-acquaintance']").get()[0].innerText = getCountDown(currentTimeTimer);
         });
     });
@@ -38,7 +34,7 @@ $(() => {
     socket.on('new item sale', data => {
         showMsg('', 'new art sale!');
         setArtInfo(data);
-        startStopwatch(data.timeout, 1000, (currentTimeTimer) => {
+        startStopwatch(data.endTimeSaleItem - Date.now(), 1000, (currentTimeTimer) => {
             $("#art-dialog").find("label[name='count-down']").get()[0].innerText = getCountDown(currentTimeTimer);
         });
     });
