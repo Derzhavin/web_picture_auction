@@ -23,7 +23,7 @@ var db = require('./db');
 const {Auction} = require('./serverSocket/auction');
 const {ConnectionNotifier} = require('./serverSocket/connectionNotifier');
 
-var auction = new Auction(db.settings, db.arts);
+var auction = new Auction(db);
 var connectionNotifier = new ConnectionNotifier();
 
 connectionNotifier.start(io);

@@ -12,7 +12,8 @@ module.exports = {
         headers: './src/js/headers.js',
         containers: './src/js/containers.js',
         tabs: './src/js/tabs.js',
-        socketClient: './src/js/socketClient.js'
+        socketClient: './src/js/socketClient.js',
+        stopwatch: './src/js/stopwatch.js'
     },
     output: {
         filename: 'js/[name].js',
@@ -21,6 +22,7 @@ module.exports = {
         new CleanWebpackPlugin(),
         new CopyPlugin([
             {from:'src/imgs',to:'imgs'},
+            {from:'src/js/stopwatch.js',to:'../stopwatch.js'},
         ]),
     ],
     module: {

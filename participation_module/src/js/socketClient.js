@@ -1,5 +1,10 @@
+import {Stopwatch} from './stopwatch.js';
+
 $(() => {
     var socket = io();
+    var itemSaleStopwatch = null;
+    var itemAcquaintanceStopWatch = null;
+
     setupEvents(socket);
 
     let username = $('#user').text();
@@ -26,18 +31,31 @@ $(() => {
     socket.on('new item acquaintance', data => {
         showMsg('', 'new art acquaintance!');
         setArtInfo(data);
-        startStopwatch(data.endTimeAcquaintanceItem - Date.now(), 1000, (currentTimeTimer) => {
+
+        itemAcquaintanceStopWatch = new Stopwatch(data.endTimeAcquaintanceItem - Date.now(), 1000, (currentTimeTimer) => {
             $("#art-dialog").find("label[name='time-to-acquaintance']").get()[0].innerText = getCountDown(currentTimeTimer);
-        });
+        }, () => {});
+        itemAcquaintanceStopWatch.start();
     });
 
     socket.on('new item sale', data => {
         showMsg('', 'new art sale!');
         setArtInfo(data);
-        startStopwatch(data.endTimeSaleItem - Date.now(), 1000, (currentTimeTimer) => {
+        itemSaleStopwatch = new Stopwatch(data.endTimeSaleItem - Date.now(), 1000, (currentTimeTimer) => {
             $("#art-dialog").find("label[name='count-down']").get()[0].innerText = getCountDown(currentTimeTimer);
-        });
+        }, () => {});
+        itemSaleStopwatch.start();
     });
+
+    socket.on('some user raised sum', data => {
+        showMsg(data.username, data.msg);
+        itemSaleStopwatch.addExtraTime(data.endTimeSaleItem - Date.now());
+        setArtInfo(data);
+    });
+
+    socket.on('not enough money', () => {alert('Not enough money!');});
+
+    socket.on('some user bought item', data => {showMsg(data.username, data.msg);})
 });
 
 function showMsg(author, msg) {
@@ -67,6 +85,8 @@ function startStopwatch(timer, freq, callback) {
         callback(currentTimeTimer);
         clearInterval(intervalId)
     }, timer);
+
+    return intervalId;
 }
 
 function visualizeAuctionClocks(timer) {
@@ -85,9 +105,11 @@ function offer(socket) {
 }
 
 function setArtInfo(data) {
+    let item = data.item;
+
     $("#art-dialog").find("img").get()[0].src = data.item.way;
-    $("#art-dialog").find("label[name='name']").get()[0].innerText = data.item.artName;
-    $("#art-dialog").find("label[name='artist']").get()[0].innerText = data.item.artist;
-    $("#art-dialog").find("label[name='start-price']").get()[0].innerText = data.item.price;
-    $("#art-dialog").find("label[name='current-price']").get()[0].innerText = data.item.price;
+    $("#art-dialog").find("label[name='name']").get()[0].innerText = item.artName;
+    $("#art-dialog").find("label[name='artist']").get()[0].innerText = item.artist;
+    $("#art-dialog").find("label[name='start-price']").get()[0].innerText = item.price;
+    $("#art-dialog").find("label[name='current-price']").get()[0].innerText = (item.newPrice) ? item.newPrice: item.price;
 }

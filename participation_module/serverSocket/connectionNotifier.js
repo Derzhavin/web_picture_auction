@@ -2,9 +2,8 @@ function ConnectionNotifier() {
     this.connections = {};
     this.chat = [];
 
-    this.saveMsg = (username, msg) => {
-        this.chat.push({username: username, msg: msg});
-    };
+    this.saveMsg = (username, msg) => {this.chat.push({username: username, msg: msg});};
+    this.getUserBySocketId = (id) => {return this.connections[id];};
 
     this.start = (io) => {
         io.sockets.on('connection', socket => {
