@@ -52,3 +52,9 @@ exports.getMoneyByUsername = (username) => {
         return participant.money;
     }
 };
+
+exports.cloneUsers = () => {
+    return JSON.parse(JSON.stringify(records));
+}
+
+exports.participants = records;

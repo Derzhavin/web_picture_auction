@@ -4,63 +4,59 @@ $(() => {
     var socket = io();
     var itemSaleStopwatch = null;
     var itemAcquaintanceStopWatch = null;
+    var auctionStopWatch = null;
+    var $countDown = $("#art-dialog").find("label[name='count-down']").get()[0];
+    var $timeToAcquaintance = $("#art-dialog").find("label[name='time-to-acquaintance']").get()[0];
+    var auctionClocksId = document.getElementById("auction-clocks");
+    var username = $('#user').text();
 
     setupEvents(socket);
-
-    let username = $('#user').text();
-
+    
     socket.emit('new connection', {username: username});
     socket.emit('bring up to date');
-
     socket.on('about connection', data => {showMsg("", data.msg);});
     socket.on('chat history', data => data.chat.forEach(line => showMsg(line.username, line.msg)));
-    socket.on('auction before', data => {visualizeAuctionClocks(data.startTime - Date.now());});
+    socket.on('auction before', data => {auctionStopWatch = makeVisualizedClock(auctionClocksId, data.startTime - Date.now());});
     socket.on('auction stage', data => {showMsg('', data.msg);});
     socket.on('knock me', () => socket.emit('bring up to date'));
-
     socket.on('auction inProgress', data => {
-        visualizeAuctionClocks(data.endTime - Date.now());
+        auctionStopWatch = makeVisualizedClock(auctionClocksId, data.endTime - Date.now());
         $('button[name="offer"]').attr('disabled', false);
     });
 
     socket.on('auction finished', data => {
-        document.getElementById("auction-clocks").innerText = "00:00:00";
+        [auctionStopWatch, itemSaleStopwatch, itemAcquaintanceStopWatch].forEach(e => {if (e) {e.stop();}});
         $('button[name="offer"]').attr('disabled', true);
     });
 
     socket.on('new item acquaintance', data => {
         showMsg('', 'new art acquaintance!');
         setArtInfo(data);
-
-        itemAcquaintanceStopWatch = new Stopwatch(data.endTimeAcquaintanceItem - Date.now(), 1000, (currentTimeTimer) => {
-            $("#art-dialog").find("label[name='time-to-acquaintance']").get()[0].innerText = getCountDown(currentTimeTimer);
-        }, () => {});
-        itemAcquaintanceStopWatch.start();
+        itemAcquaintanceStopWatch = makeVisualizedClock($timeToAcquaintance, data.endTimeAcquaintanceItem - Date.now());
     });
 
     socket.on('new item sale', data => {
         showMsg('', 'new art sale!');
         setArtInfo(data);
-        itemSaleStopwatch = new Stopwatch(data.endTimeSaleItem - Date.now(), 1000, (currentTimeTimer) => {
-            $("#art-dialog").find("label[name='count-down']").get()[0].innerText = getCountDown(currentTimeTimer);
-        }, () => {});
-        itemSaleStopwatch.start();
+        itemSaleStopwatch = makeVisualizedClock($countDown, data.endTimeSaleItem - Date.now());
     });
 
     socket.on('some user raised sum', data => {
         showMsg(data.username, data.msg);
         itemSaleStopwatch.addExtraTime(data.endTimeSaleItem - Date.now());
-        setArtInfo(data);
     });
 
-    socket.on('not enough money', () => {alert('Not enough money!');});
-
-    socket.on('some user bought item', data => {showMsg(data.username, data.msg);})
+    socket.on('not enough money', () => alert('Not enough money!'));
+    socket.on('some user bought item', data => showMsg(data.username, data.msg))
 });
 
-function showMsg(author, msg) {
-    $('#chat').append("<p>" + author + ': ' + msg);
+function makeVisualizedClock(objId, timer) {
+    let stopwatch  = new Stopwatch(timer, 1000, currentTimeTimer => {objId.innerText = getCountDown(currentTimeTimer);}, () => objId.innerText = "00:00:00");
+    stopwatch.start();
+    return stopwatch;
 }
+
+function showMsg(author, msg) {$('#chat').append("<p>" + author + ': ' + msg);}
 
 function getCountDown(ms) {
     let time = ms / 1000;
@@ -73,34 +69,9 @@ function getCountDown(ms) {
     return format(hours) + ':' + format(minutes) + ':' + format(seconds);
 }
 
-function startStopwatch(timer, freq, callback) {
-    let currentTimeTimer = timer;
-
-    let intervalId = setInterval(() => {
-        callback(currentTimeTimer);
-        currentTimeTimer -= freq;
-    }, freq);
-
-    setTimeout(() => {
-        callback(currentTimeTimer);
-        clearInterval(intervalId)
-    }, timer);
-
-    return intervalId;
-}
-
-function visualizeAuctionClocks(timer) {
-    startStopwatch(timer, 1000, (currentTimeTimer) => {
-        document.getElementById("auction-clocks").innerText = getCountDown(currentTimeTimer);
-    });
-}
-
-function setupEvents(socket) {
-    $("button[name='offer']").click(() => offer(socket));
-}
+function setupEvents(socket) {$("button[name='offer']").click(() => offer(socket));}
 
 function offer(socket) {
-    console.log($("input[name='raising-sum']"));
     socket.emit('offer', {raisingSum: parseInt($("input[name='raising-sum']").val()), money: parseInt($("#balance").text())});
 }
 

@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const {Stopwatch} = require('./stopwatch').Stopwatch;
+const {Stopwatch} = require('../stopwatch');
 
 const stage = {
     before: 0x0,
@@ -44,6 +44,9 @@ function Auction(db) {
                     connectionNotifier.saveMsg(this.currentPurchaser, msg);
                     io.sockets.emit('some user bought item', {username: this.currentPurchaser, msg: msg});
                     db.purchases.giveArtToUser(this.currentPurchaser, this.items[this.currentItemInd]);
+
+                    db.users.setUserMoney(this.currentPurchaser, db.users.getMoneyByUsername(this.currentPurchaser) - this.items[this.currentItemInd].newPrice);
+                    db.arts.updateArtPrice(this.items[this.currentItemInd].artName, this.items[this.currentItemInd].newPrice);
                     this.itemIterator.emit('sell item');
                 });
 
@@ -66,8 +69,13 @@ function Auction(db) {
     this.stage = stage.before;
     this.state = state.acquaintance;
     this.currentItemInd = -1;
-    this.items = db.arts;
+    this.items = db.arts.arts;
     this.currentPurchaser = null;
+    this.tmpParticipants = db.users.cloneUsers();
+
+    this.updateTmpParticipant = (username, raisingSum) => {
+        this.tmpParticipants.filter(p => p.username === username)[0].money -= raisingSum;
+    };
 
     this.planStages = (io, connectionNotifier) => {
         let msg = "";
@@ -135,33 +143,37 @@ function Auction(db) {
     this.doBidding = (io, connectionNotifier) => {
         io.sockets.on('connection', socket => {
             socket.on('offer', data => {
-                let username = connectionNotifier.getUserBySocketId(socket.id);
-                let raisingSum = data.raisingSum;
-                let userMoney = db.users.getMoneyByUsername(username);
-                let item = this.items[this.currentItemInd];
-                let newPrice = item.price + raisingSum;
+                if (data.raisingSum) {
+                    let username = connectionNotifier.getUserBySocketId(socket.id);
+                    let raisingSum = data.raisingSum;
+                    let userMoney = db.users.getMoneyByUsername(username);
+                    let item = this.items[this.currentItemInd];
+                    let newPrice = item.price + raisingSum;
 
-                if (userMoney >= newPrice) {
-                    this.currentPurchaser = username;
-                    let msg = `${username} raised sum by ${raisingSum}`;
-                    connectionNotifier.saveMsg(username, msg);
-                    io.sockets.emit('some user raised sum', {
-                        username: username,
-                        item: item,
-                        msg: msg,
-                        endTimeSaleItem: this.endTimeSaleItem + this.timeout
-                    });
+                    if (userMoney >= newPrice) {
+                        this.updateTmpParticipant(username, raisingSum);
+                        this.currentPurchaser = username;
+                        let msg = `${username} raised sum by ${raisingSum}`;
+                        connectionNotifier.saveMsg(username, msg);
+                        io.sockets.emit('some user raised sum', {
+                            username: username,
+                            item: item,
+                            msg: msg,
+                            endTimeSaleItem: this.endTimeSaleItem + this.timeout
+                        });
 
-                    this.stopwatch.addExtraTime(this.timeout);
-                } else {
-                    socket.emit('not enough money');
+                        this.stopwatch.addExtraTime(this.timeout);
+                    } else {
+                        socket.emit('not enough money');
+                    }
                 }
             });
         });
     };
 
     this.start = (io, connectionNotifier) => {
-        this.itemIterator = createItemIterator(io);
+        this.itemIterator = createItemIterator(io, connectionNotifier);
+        console.log(this.items)
         this.planStages(io, connectionNotifier);
         this.bringUpToDateUser(io);
         this.doBidding(io, connectionNotifier);

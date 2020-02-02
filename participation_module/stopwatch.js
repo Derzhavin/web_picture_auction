@@ -1,18 +1,20 @@
-function Stopwatch(timer, freq, callback) {
+function Stopwatch(timer, freq, callbackDuringTimer, callbackTimeOut) {
     this.currentTimeTimer = timer;
     this.timer = timer;
     this.intervalId = null;
-    this.callback = callback;
+    this.callbackDuringTimer = callbackDuringTimer;
+    this.callbackTimeOut = callbackTimeOut;
     this.freq = freq;
 
     this.start = () => {
         this.intervalId = setInterval(() => {
-            this.callback(this.currentTimeTimer);
+            this.callbackDuringTimer(this.currentTimeTimer);
             this.currentTimeTimer -= this.freq;
         }, this.freq);
 
         setTimeout(() => {
-            this.callback(this.currentTimeTimer);
+            this.callbackDuringTimer(this.currentTimeTimer);
+            this.callbackTimeOut();
             clearInterval(this.intervalId);
         }, this.timer);
     };
