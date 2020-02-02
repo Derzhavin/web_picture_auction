@@ -15,4 +15,9 @@ exports.updateArtPrice = (artName, newPrice) => {
     }
 };
 
+exports.setArtOwner = (artName, owner) => {
+    records.filter(art => art.artName === artName)[0].owner = owner;
+    fs.writeFile(pathToArts, JSON.stringify(records), err => {if(err) {throw err;}});
+};
+
 module.exports.arts = records;

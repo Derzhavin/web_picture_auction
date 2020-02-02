@@ -23,31 +23,53 @@ $(() => {
         auctionStopWatch = makeVisualizedClock(auctionClocksId, data.endTime - Date.now());
         $('button[name="offer"]').attr('disabled', false);
     });
-
     socket.on('auction finished', data => {
         [auctionStopWatch, itemSaleStopwatch, itemAcquaintanceStopWatch].forEach(e => {if (e) {e.stop();}});
         $('button[name="offer"]').attr('disabled', true);
     });
-
     socket.on('new item acquaintance', data => {
         showMsg('', 'new art acquaintance!');
         setArtInfo(data);
         itemAcquaintanceStopWatch = makeVisualizedClock($timeToAcquaintance, data.endTimeAcquaintanceItem - Date.now());
     });
-
     socket.on('new item sale', data => {
         showMsg('', 'new art sale!');
         setArtInfo(data);
         itemSaleStopwatch = makeVisualizedClock($countDown, data.endTimeSaleItem - Date.now());
     });
-
     socket.on('some user raised sum', data => {
         showMsg(data.username, data.msg);
         itemSaleStopwatch.addExtraTime(data.endTimeSaleItem - Date.now());
     });
-
     socket.on('not enough money', () => alert('Not enough money!'));
-    socket.on('some user bought item', data => showMsg(data.username, data.msg))
+    socket.on('purchase result', data => showMsg(data.username, data.msg));
+    socket.on('you bought', data => {$("#balance").innerText = (parseInt($("#balance").innerText) - data.newPrice).toString();});
+    socket.on('update admin info', data => {
+        $("#participants").empty();
+        data.participants.forEach(p => {
+            let instanceParticipantDiv = $("#instanceParticipantDiv").clone();
+            instanceParticipantDiv.find("label[name='participant']").get()[0].innerText = p.username;
+            instanceParticipantDiv.find("label[name='money']").get()[0].innerText = p.username;
+            instanceParticipantDiv.show();
+            instanceParticipantDiv.removeAttr('id');
+            $("participants").append(instanceParticipantDiv);
+        });
+
+        $("#arts").empty();
+        data.arts.forEach(a => {
+            let instanceArtDiv = $("#instanceArtDiv").clone();
+            instanceArtDiv.find("img").get()[0].src = a.way;
+            instanceArtDiv.find("label[name='name']").get()[0].innerText = a.artName;
+            instanceArtDiv.find("label[name='artist']").get()[0].innerText = a.artist;
+            instanceArtDiv.find("label[name='start-price']").get()[0].innerText = a.price;
+            instanceArtDiv.find("label[name='sold-for']").get()[0].innerText = (a.newPrice) ? a.newPrice: '-';
+            instanceArtDiv.find("label[name='owner']").get()[0].innerText = a.owner;
+
+            instanceArtDiv.show();
+            instanceArtDiv.removeAttr('id');
+            $("participants").append(instanceArtDiv);
+        });
+    });
 });
 
 function makeVisualizedClock(objId, timer) {
@@ -63,17 +85,13 @@ function getCountDown(ms) {
     let hours = Math.floor(time / 3600);
     let minutes = Math.floor((time - hours * 60 * 60) / 60);
     let seconds = Math.floor(time - hours * 60 * 60 - minutes * 60);
-    let format = (number) => {
-        return (number / 10 >= 1) ? number : '0' + number
-    };
+    let format = (number) => {return (number / 10 >= 1) ? number : '0' + number};
     return format(hours) + ':' + format(minutes) + ':' + format(seconds);
 }
 
 function setupEvents(socket) {$("button[name='offer']").click(() => offer(socket));}
 
-function offer(socket) {
-    socket.emit('offer', {raisingSum: parseInt($("input[name='raising-sum']").val()), money: parseInt($("#balance").text())});
-}
+function offer(socket) {socket.emit('offer', {raisingSum: parseInt($("input[name='raising-sum']").val()), money: parseInt($("#balance").text())});}
 
 function setArtInfo(data) {
     let item = data.item;

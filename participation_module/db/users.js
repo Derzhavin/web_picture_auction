@@ -1,4 +1,6 @@
-var records = require('./jsons/participants');
+let pathToParticipants = './jsons/participants';
+
+var records = require(pathToParticipants);
 
 var adminKey = 'admin';
 
@@ -40,6 +42,7 @@ exports.setUserMoney = (username, money) => {
         throw 'no user with this username!';
     } else {
         participant.money = money;
+        fs.writeFile(pathToParticipants, JSON.stringify(records), err => {if(err) {throw err;}});
     }
 };
 

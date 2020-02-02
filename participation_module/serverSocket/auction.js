@@ -33,22 +33,36 @@ function Auction(db) {
     let createItemIterator = (io, connectionNotifier) => {
         const itemIterator = new EventEmitter();
         itemIterator.on('sell item', () => {
+            this.currentPurchaser = null;
             this.currentItemInd++;
             this.state = state.acquaintance;
             this.endTimeAcquaintanceItem = Date.now() + this.pause;
 
             io.sockets.emit('knock me');
             setTimeout(() => {
-                this.stopwatch = new Stopwatch(this.timeout, 1000, () => {}, () => {
-                    let msg = this.currentPurchaser + ' bought art!';
+                this.stopwatch = new Stopwatch(this.timeout, 1000, (time) => {console.log(time)}, () => {
+                    let msg = "";
+                    if (this.currentPurchaser) {
+                        msg = this.currentPurchaser + ' bought art!';
+                        this.tmpParticipants = db.users.cloneUsers();
+                        let art = this.items[this.currentItemInd];
+                        db.purchases.giveArtToUser(this.currentPurchaser, art);
+                        db.users.setUserMoney(this.currentPurchaser, db.users.getMoneyByUsername(this.currentPurchaser) - art.newPrice);
+                        db.arts.updateArtPrice(art.artName, art.newPrice);
+                        db.arts.setArtOwner(this.currentPurchaser, art.artName);
+                        io.sockets.sockets[connectionNotifier.getSocketIdByUsername(this.currentPurchaser)].emit('you bought', {price: art.newPrice});
+                    } else {
+                        this.tmpParticipants = db.users.cloneUsers();
+                        this.currentPurchaser = "";
+                        msg = "nobody bought art!";
+                    }
                     connectionNotifier.saveMsg(this.currentPurchaser, msg);
-                    io.sockets.emit('some user bought item', {username: this.currentPurchaser, msg: msg});
-                    db.purchases.giveArtToUser(this.currentPurchaser, this.items[this.currentItemInd]);
-
-                    db.users.setUserMoney(this.currentPurchaser, db.users.getMoneyByUsername(this.currentPurchaser) - this.items[this.currentItemInd].newPrice);
-                    db.arts.updateArtPrice(this.items[this.currentItemInd].artName, this.items[this.currentItemInd].newPrice);
-                    this.itemIterator.emit('sell item');
+                    io.sockets.emit('purchase result', {username: this.currentPurchaser, msg: msg});
+                    let id = connectionNotifier.getSocketIdByUsername('admin');
+                    io.sockets.sockets[id].emit('update admin info', {arts: db.arts.arts, participants: db.users.participants});
+                    itemIterator.emit('sell item');
                 });
+                this.stopwatch.start();
 
                 this.state = state.sale;
                 this.endTimeSaleItem = Date.now() + this.timeout;
@@ -89,6 +103,9 @@ function Auction(db) {
             this.stage = stage.finished;
             io.sockets.emit('auction stage', {msg: 'Auction finished!'});
             io.sockets.emit('knock me');
+            if (this.stopwatch) {
+                this.stopwatch.stop();
+            }
             connectionNotifier.saveMsg("", 'Auction finished!');
         };
 
@@ -173,7 +190,6 @@ function Auction(db) {
 
     this.start = (io, connectionNotifier) => {
         this.itemIterator = createItemIterator(io, connectionNotifier);
-        console.log(this.items)
         this.planStages(io, connectionNotifier);
         this.bringUpToDateUser(io);
         this.doBidding(io, connectionNotifier);

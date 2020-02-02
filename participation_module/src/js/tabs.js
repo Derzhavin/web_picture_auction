@@ -13,4 +13,6 @@ export function setupTabs() {
     });
 
     showTab($('li[name="arts"]'));
+
+    [$("#instanceArtDiv"), $("#instanceParticipantDiv")].forEach(e => e.hide());
 }
