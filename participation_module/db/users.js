@@ -1,4 +1,7 @@
-let pathToParticipants = './jsons/participants';
+let pathToParticipants = './jsons/participants.json';
+
+const fs = require('fs');
+const path = require('path');
 
 var records = require(pathToParticipants);
 
@@ -39,10 +42,11 @@ exports.setUserMoney = (username, money) => {
     let participant = records.filter(participant => participant.username === username)[0];
 
     if (!participant) {
-        throw 'no user with this username!';
+        throw `no user with this username ${username}!`;
     } else {
         participant.money = money;
-        fs.writeFile(pathToParticipants, JSON.stringify(records), err => {if(err) {throw err;}});
+
+        fs.writeFile(path.join('db', pathToParticipants), JSON.stringify(records), err => {if(err) {throw err;}});
     }
 };
 
@@ -56,8 +60,6 @@ exports.getMoneyByUsername = (username) => {
     }
 };
 
-exports.cloneUsers = () => {
-    return JSON.parse(JSON.stringify(records));
-}
+exports.cloneUsers = () => {return JSON.parse(JSON.stringify(records));}
 
 exports.participants = records;

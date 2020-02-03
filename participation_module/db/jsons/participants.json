@@ -1,14 +1,1 @@
-[
-  {
-    "username": "Denis",
-    "money": "800"
-  },
-  {
-    "username": "George",
-    "money": "10000"
-  },
-  {
-    "username": "Bob",
-    "money": "2500"
-  }
-]
+[{"username":"Denis","money":1000,"id":1,"password":"1234"},{"username":"George","money":"10000","id":2,"password":"1234"},{"username":"Bob","money":"2000","id":3,"password":"1234"},{"username":"admin","id":4,"password":"admin"}]

@@ -31,7 +31,7 @@ router.get('/admin', require('connect-ensure-login').ensureLoggedIn('/auth'), (r
 
     let arts = db.arts.arts;
     arts.map(art => {if (!art.owner) art.owner = ""});
-
+    console.log(arts);
     res.render('admin', {arts: arts, participants: db.users.participants});
 });
 
@@ -57,8 +57,13 @@ router.get('/user-purchases', require('connect-ensure-login').ensureLoggedIn('/a
 
 
 function getArtsBoughtByUser(username) {
-    let itemsPurchased = db.purchases.getArtsByUsername(req.user.username);
-    return db.arts.arts.filter(art => itemsPurchased.includes(art.artName));
+    let itemsPurchased = db.purchases.getArtsByUsername(username);
+
+    if (itemsPurchased) {
+        return db.arts.arts.filter(art => itemsPurchased.includes(art.artName));
+    }
+
+    return [];
 }
 
 module.exports = router;

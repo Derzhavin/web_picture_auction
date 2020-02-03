@@ -1,6 +1,6 @@
 div.art-box(id="instanceArtDiv")
     div.art-box-img
-        img(src=art.way)
+        img(src="")
 
     div.art-box-info
         p Name:
@@ -14,19 +14,19 @@ div.art-box(id="instanceArtDiv")
         p Owner
             label(name="owner")
 div.tab(id="arts")
-for art in arts
-    div.art-box
-        div.art-box-img
-            img(src=art.way)
+    for art in arts
+        div.art-box
+            div.art-box-img
+                img(src=art.way)
 
-        div.art-box-info
-            p Name:
-                label(name="name") #{art.artName}
-            p Artist:
-                label(name="artist") #{art.artist}
-            p Sold for:
-                label(name="sold-for") #{art.newPrice}
-            p Min price:
-                label(name="price") #{art.artName}
-            p Owner
-                label(name="owner") #{art.owner}
+            div.art-box-info
+                p Name:
+                    label(name="name") #{art.artName}
+                p Artist:
+                    label(name="artist") #{art.artist}
+                p Sold for:
+                    label(name="sold-for") #{art.newPrice}
+                p Min price:
+                    label(name="price") #{art.artName}
+                p Owner
+                    label(name="owner") #{art.owner}

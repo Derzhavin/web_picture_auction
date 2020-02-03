@@ -12,24 +12,22 @@ const state = {
     sale: 0x1
 };
 
+let initStartTime = (date, time) => {
+    let timeArr = time.split(':');
+    return Date.parse(date) + parseInt(timeArr[0]) * 60 * 60 * 1000 + parseInt(timeArr[1]) * 60 * 1000 - 3 * 60 * 60 * 1000;
+};
+
+let initEndTime = (startTime, duration) => {
+    let timeArr = duration.split(':');
+    return startTime + parseInt(timeArr[0]) * 60 * 60 * 1000 + parseInt(timeArr[1]) * 60 * 1000;
+};
+
+let initInSecHoursTime = (pauseTime) => {
+    let timeArr = pauseTime.split(':');
+    return parseInt(timeArr[0]) * 60 * 1000 + parseInt(timeArr[1]) * 1000;
+};
+
 function Auction(db) {
-    let initStartTime = (date, time) => {
-        let timeArr = time.split(':');
-        return Date.parse(date) + parseInt(timeArr[0]) * 60 * 60 * 1000 + parseInt(timeArr[1]) * 60 * 1000 - 3 * 60 * 60 * 1000;
-    };
-
-    let initEndTime = (startTime, duration) => {
-        let timeArr = duration.split(':');
-        return startTime + parseInt(timeArr[0]) * 60 * 60 * 1000 + parseInt(timeArr[1]) * 60 * 1000;
-    };
-
-    let initInSecHoursTime = (pauseTime) => {
-        let timeArr = pauseTime.split(':');
-        return parseInt(timeArr[0]) * 60 * 1000 + parseInt(timeArr[1]) * 1000;
-    };
-
-    let settings = db.settings;
-
     let createItemIterator = (io, connectionNotifier) => {
         const itemIterator = new EventEmitter();
         itemIterator.on('sell item', () => {
@@ -40,7 +38,7 @@ function Auction(db) {
 
             io.sockets.emit('knock me');
             setTimeout(() => {
-                this.stopwatch = new Stopwatch(this.timeout, 1000, (time) => {console.log(time)}, () => {
+                this.stopwatch = new Stopwatch(this.timeout, 1000, () => {}, () => {
                     let msg = "";
                     if (this.currentPurchaser) {
                         msg = this.currentPurchaser + ' bought art!';
@@ -49,7 +47,7 @@ function Auction(db) {
                         db.purchases.giveArtToUser(this.currentPurchaser, art);
                         db.users.setUserMoney(this.currentPurchaser, db.users.getMoneyByUsername(this.currentPurchaser) - art.newPrice);
                         db.arts.updateArtPrice(art.artName, art.newPrice);
-                        db.arts.setArtOwner(this.currentPurchaser, art.artName);
+                        db.arts.setArtOwner(art.artName, this.currentPurchaser);
                         io.sockets.sockets[connectionNotifier.getSocketIdByUsername(this.currentPurchaser)].emit('you bought', {price: art.newPrice});
                     } else {
                         this.tmpParticipants = db.users.cloneUsers();
@@ -59,8 +57,14 @@ function Auction(db) {
                     connectionNotifier.saveMsg(this.currentPurchaser, msg);
                     io.sockets.emit('purchase result', {username: this.currentPurchaser, msg: msg});
                     let id = connectionNotifier.getSocketIdByUsername('admin');
-                    io.sockets.sockets[id].emit('update admin info', {arts: db.arts.arts, participants: db.users.participants});
-                    itemIterator.emit('sell item');
+
+                    if (id) {
+                        io.sockets.sockets[id].emit('update admin info', {arts: db.arts.arts, participants: db.users.participants});
+                    }
+
+                    if (this.currentItemInd < this.items.length) {
+                        itemIterator.emit('sell item');
+                    }
                 });
                 this.stopwatch.start();
 
@@ -73,11 +77,11 @@ function Auction(db) {
         return itemIterator;
     };
 
-    this.startTime = initStartTime(settings.date, settings.time);
-    this.endTime = initEndTime(this.startTime, settings.duration);
+    this.startTime = initStartTime(db.settings.date, db.settings.time);
+    this.endTime = initEndTime(this.startTime, db.settings.duration);
     this.programStartedTime = Date.now();
-    this.pause = initInSecHoursTime(settings.pause_time);
-    this.timeout = initInSecHoursTime(settings.timeout);
+    this.pause = initInSecHoursTime(db.settings.pause_time);
+    this.timeout = initInSecHoursTime(db.settings.timeout);
     this.endTimeAcquaintanceItem = 0;
     this.endTimeSaleItem = 0;
     this.stage = stage.before;
@@ -106,6 +110,8 @@ function Auction(db) {
             if (this.stopwatch) {
                 this.stopwatch.stop();
             }
+
+            this.itemIterator.removeAllListeners();
             connectionNotifier.saveMsg("", 'Auction finished!');
         };
 
@@ -138,15 +144,11 @@ function Auction(db) {
                     socket.emit('auction inProgress', {endTime: this.endTime});
 
                     if (this.state === state.acquaintance) {
-                        socket.emit('new item acquaintance', {
-                            item: this.items[this.currentItemInd], endTimeAcquaintanceItem: this.endTimeAcquaintanceItem
-                        });
+                        socket.emit('new item acquaintance', {item: this.items[this.currentItemInd], endTimeAcquaintanceItem: this.endTimeAcquaintanceItem});
                     }
 
                     if (this.state === state.sale) {
-                        socket.emit('new item sale', {
-                            item: this.items[this.currentItemInd], endTimeSaleItem: this.endTimeSaleItem
-                        });
+                        socket.emit('new item sale', {item: this.items[this.currentItemInd], endTimeSaleItem: this.endTimeSaleItem});
                     }
                 }
 
@@ -160,6 +162,7 @@ function Auction(db) {
     this.doBidding = (io, connectionNotifier) => {
         io.sockets.on('connection', socket => {
             socket.on('offer', data => {
+                console.log(data);
                 if (data.raisingSum) {
                     let username = connectionNotifier.getUserBySocketId(socket.id);
                     let raisingSum = data.raisingSum;

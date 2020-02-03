@@ -21,20 +21,22 @@ $(() => {
     socket.on('knock me', () => socket.emit('bring up to date'));
     socket.on('auction inProgress', data => {
         auctionStopWatch = makeVisualizedClock(auctionClocksId, data.endTime - Date.now());
-        $('button[name="offer"]').attr('disabled', false);
+        setOffer(true);
     });
     socket.on('auction finished', data => {
         [auctionStopWatch, itemSaleStopwatch, itemAcquaintanceStopWatch].forEach(e => {if (e) {e.stop();}});
-        $('button[name="offer"]').attr('disabled', true);
+        setOffer(false);
     });
     socket.on('new item acquaintance', data => {
         showMsg('', 'new art acquaintance!');
         setArtInfo(data);
+        setOffer(false);
         itemAcquaintanceStopWatch = makeVisualizedClock($timeToAcquaintance, data.endTimeAcquaintanceItem - Date.now());
     });
     socket.on('new item sale', data => {
         showMsg('', 'new art sale!');
         setArtInfo(data);
+        setOffer(true);
         itemSaleStopwatch = makeVisualizedClock($countDown, data.endTimeSaleItem - Date.now());
     });
     socket.on('some user raised sum', data => {
@@ -52,7 +54,7 @@ $(() => {
             instanceParticipantDiv.find("label[name='money']").get()[0].innerText = p.username;
             instanceParticipantDiv.show();
             instanceParticipantDiv.removeAttr('id');
-            $("participants").append(instanceParticipantDiv);
+            $("#participants").append(instanceParticipantDiv);
         });
 
         $("#arts").empty();
@@ -67,10 +69,12 @@ $(() => {
 
             instanceArtDiv.show();
             instanceArtDiv.removeAttr('id');
-            $("participants").append(instanceArtDiv);
+            $("#arts").append(instanceArtDiv);
         });
     });
 });
+
+function setOffer(state) {$('button[name="offer"]').attr('disabled', !state);}
 
 function makeVisualizedClock(objId, timer) {
     let stopwatch  = new Stopwatch(timer, 1000, currentTimeTimer => {objId.innerText = getCountDown(currentTimeTimer);}, () => objId.innerText = "00:00:00");
@@ -91,7 +95,9 @@ function getCountDown(ms) {
 
 function setupEvents(socket) {$("button[name='offer']").click(() => offer(socket));}
 
-function offer(socket) {socket.emit('offer', {raisingSum: parseInt($("input[name='raising-sum']").val()), money: parseInt($("#balance").text())});}
+function offer(socket) {
+    return socket.emit('offer', {raisingSum: parseInt($("input[name='raising-sum']").val()), money: parseInt($("#balance").text())});
+}
 
 function setArtInfo(data) {
     let item = data.item;
@@ -100,5 +106,7 @@ function setArtInfo(data) {
     $("#art-dialog").find("label[name='name']").get()[0].innerText = item.artName;
     $("#art-dialog").find("label[name='artist']").get()[0].innerText = item.artist;
     $("#art-dialog").find("label[name='start-price']").get()[0].innerText = item.price;
+    $("#art-dialog").find("label[name='min-step']").get()[0].innerText = item.minStep;
+    $("#art-dialog").find("label[name='max-step']").get()[0].innerText = item.maxStep;
     $("#art-dialog").find("label[name='current-price']").get()[0].innerText = (item.newPrice) ? item.newPrice: item.price;
 }

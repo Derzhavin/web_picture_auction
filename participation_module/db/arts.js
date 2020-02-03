@@ -1,8 +1,10 @@
-const pathToArts = './jsons/arts';
+const pathToArts = './jsons/arts.json';
 
 var records = require(pathToArts);
+records.forEach(record => {record.owner = "";});
 
 const fs = require('fs');
+const path = require('path');
 
 exports.updateArtPrice = (artName, newPrice) => {
     let art = records.filter(art => art.artName === artName)[0];
@@ -11,13 +13,13 @@ exports.updateArtPrice = (artName, newPrice) => {
         throw 'no art with such name!';
     } else {
         art.newPrice = newPrice;
-        fs.writeFile(pathToArts, JSON.stringify(records), err => {if(err) {throw err;}});
+        fs.writeFile(path.join('db', pathToArts), JSON.stringify(records), err => {if(err) {throw err;}});
     }
 };
 
 exports.setArtOwner = (artName, owner) => {
     records.filter(art => art.artName === artName)[0].owner = owner;
-    fs.writeFile(pathToArts, JSON.stringify(records), err => {if(err) {throw err;}});
+    fs.writeFile(path.join('db', pathToArts), JSON.stringify(records), err => {if(err) {throw err;}});
 };
 
 module.exports.arts = records;

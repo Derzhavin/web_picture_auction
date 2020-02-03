@@ -19,7 +19,10 @@ function Stopwatch(timer, freq, callbackDuringTimer, callbackTimeOut) {
         }, this.timer);
     };
 
-    this.stop = () => {this.intervalId = null;}
+    this.stop = () => {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+    }
 
     this.addExtraTime = (extraTime) => {
         this.stop();

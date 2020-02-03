@@ -4,14 +4,7 @@ function ConnectionNotifier() {
 
     this.saveMsg = (username, msg) => {this.chat.push({username: username, msg: msg});};
     this.getUserBySocketId = (id) => {return this.connections[id];};
-    this.getSocketIdByUsername = (username) => {
-        let id = Object.keys(this.connections).find(key => object[key] === username);
-        if (!id) {
-            throw "no such username";
-        }
-
-        return id;
-    };
+    this.getSocketIdByUsername = (username) => {return Object.keys(this.connections).find(key => this.connections[key] === username);};
 
     this.start = (io) => {
         io.sockets.on('connection', socket => {
