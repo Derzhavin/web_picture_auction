@@ -7,12 +7,13 @@ var records = require(pathToParticipants);
 
 var adminKey = 'admin';
 
+admin = {username: 'admin', id: records.length + 1, password: adminKey}
+
 records.forEach((record, index) => {
     record.id = index + 1;
     record.password = '1234';
 });
-
-records.push({username: 'admin', id: records.length + 1, password: adminKey});
+console.log(records, admin);
 exports.adminKey = adminKey;
 
 exports.findById = function(id, cb) {
@@ -21,10 +22,13 @@ exports.findById = function(id, cb) {
         if (records[idx]) {
             cb(null, records[idx]);
         } else {
+            if (idx === records.length) {
+                return cb(null, admin);
+            }
             cb(new Error('User ' + id + ' does not exist'));
         }
     });
-}
+};
 
 exports.findByUsername = function(username, cb) {
     process.nextTick(function() {
@@ -34,32 +38,13 @@ exports.findByUsername = function(username, cb) {
                 return cb(null, record);
             }
         }
+
+        if (username === 'admin') {
+            return cb(null, admin);
+        }
+
         return cb(null, null);
     });
-}
-
-exports.setUserMoney = (username, money) => {
-    let participant = records.filter(participant => participant.username === username)[0];
-
-    if (!participant) {
-        throw `no user with this username ${username}!`;
-    } else {
-        participant.money = money;
-
-        fs.writeFile(path.join('db', pathToParticipants), JSON.stringify(records), err => {if(err) {throw err;}});
-    }
 };
-
-exports.getMoneyByUsername = (username) => {
-    let participant = records.filter(participant => participant.username === username)[0];
-
-    if (!participant) {
-        throw 'no user with this username!';
-    } else {
-        return participant.money;
-    }
-};
-
-exports.cloneUsers = () => {return JSON.parse(JSON.stringify(records));}
 
 exports.participants = records;

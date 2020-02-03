@@ -15,10 +15,14 @@ exports.giveArtToUser = (username, artName) => {
     if (!record) {
         records.push({username: username, arts: [artName]});
     } else {
-        records.arts.push(artName);
+        record.arts.push(artName);
     }
-
     fs.writeFile(path.join('db', pathToPurchases), JSON.stringify(records), err => {if(err) {throw err;}});
 };
 
-exports.getArtsByUsername = (username) => {return records[username];};
+exports.getArtsByUsername = (username) => {
+    records = require(pathToPurchases);
+    let record =  records.filter(record => record.username === username)[0];
+
+    return record.arts;
+};

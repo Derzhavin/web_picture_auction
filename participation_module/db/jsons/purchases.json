@@ -1,16 +1,1 @@
-[
-  {
-    "username": "Denis",
-    "arts": [
-      {
-        "artName": "Mona Lisa",
-        "artist": "Leonardo da Vinci",
-        "price": "400",
-        "minStep": "5",
-        "maxStep": "20",
-        "way": "https://s14.stc.all.kpcdn.net/share/i/4/1477768/wx1080.jpg",
-        "owner": ""
-      }
-    ]
-  }
-]
+[{"username":"Denis","arts":["Крик","Мона Лиза","Мона Лиза","Мона Лиза","Крик"]},{"username":"Bob","arts":["Святой Лука","Святой Лука"]}]

@@ -10,18 +10,18 @@ var options = {
     key: key,
     cert: cert
 };
-
+let port = 3000;
 var server = https.createServer(options, app);
-server.listen(3000,  ()  => {
-    console.log('Listening on port 3000!');
+server.listen(port,  ()  => {
+    console.log(`Listening on port ${port}!`);
 });
 
 var io = require('socket.io')(server);
 
 var db = require('./db');
 
-const {Auction} = require('./serverSocket/auction');
-const {ConnectionNotifier} = require('./serverSocket/connectionNotifier');
+const {Auction} = require('./serverAuction/auction');
+const {ConnectionNotifier} = require('./serverAuction/connectionNotifier');
 
 var auction = new Auction(db);
 var connectionNotifier = new ConnectionNotifier();

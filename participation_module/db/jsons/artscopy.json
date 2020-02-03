@@ -1,0 +1,26 @@
+[
+  {
+    "artName": "Мона Лиза",
+    "artist": "Леонардо да Винчи",
+    "price": "1000",
+    "minStep": "50",
+    "maxStep": "100",
+    "way": "https://s14.stc.all.kpcdn.net/share/i/4/1477768/wx1080.jpg",
+  },
+  {
+    "artName": "Крик",
+    "artist": "Эдвард Мунк",
+    "price": "300",
+    "minStep": "10",
+    "maxStep": "20",
+    "way": "http://d2me0fuzw8a1c5.cloudfront.net/sites/default/files/styles/large/public/images/22922/krik_munka.jpeg"
+  },
+  {
+    "artName": "Святой Лука",
+    "artist": "Франс Хальс",
+    "price": "100",
+    "minStep": "10",
+    "maxStep": "20",
+    "way": "http://d2me0fuzw8a1c5.cloudfront.net/sites/default/files/styles/large/public/images/22922/svyatoy_luka.jpg",
+  }
+]

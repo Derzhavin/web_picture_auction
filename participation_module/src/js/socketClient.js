@@ -47,30 +47,30 @@ $(() => {
     socket.on('purchase result', data => showMsg(data.username, data.msg));
     socket.on('you bought', data => {$("#balance").innerText = (parseInt($("#balance").innerText) - data.newPrice).toString();});
     socket.on('update admin info', data => {
-        $("#participants").empty();
-        data.participants.forEach(p => {
-            let instanceParticipantDiv = $("#instanceParticipantDiv").clone();
-            instanceParticipantDiv.find("label[name='participant']").get()[0].innerText = p.username;
-            instanceParticipantDiv.find("label[name='money']").get()[0].innerText = p.username;
-            instanceParticipantDiv.show();
-            instanceParticipantDiv.removeAttr('id');
-            $("#participants").append(instanceParticipantDiv);
-        });
-
-        $("#arts").empty();
-        data.arts.forEach(a => {
-            let instanceArtDiv = $("#instanceArtDiv").clone();
-            instanceArtDiv.find("img").get()[0].src = a.way;
-            instanceArtDiv.find("label[name='name']").get()[0].innerText = a.artName;
-            instanceArtDiv.find("label[name='artist']").get()[0].innerText = a.artist;
-            instanceArtDiv.find("label[name='start-price']").get()[0].innerText = a.price;
-            instanceArtDiv.find("label[name='sold-for']").get()[0].innerText = (a.newPrice) ? a.newPrice: '-';
-            instanceArtDiv.find("label[name='owner']").get()[0].innerText = a.owner;
-
-            instanceArtDiv.show();
-            instanceArtDiv.removeAttr('id');
-            $("#arts").append(instanceArtDiv);
-        });
+        // $("#participants").empty();
+        // data.participants.forEach(p => {
+        //     let instanceParticipantDiv = $("#instanceParticipantDiv").clone();
+        //     instanceParticipantDiv.find("label[name='participant']").get()[0].innerText = p.username;
+        //     instanceParticipantDiv.find("label[name='money']").get()[0].innerText = p.username;
+        //     instanceParticipantDiv.show();
+        //     instanceParticipantDiv.removeAttr('id');
+        //     $("#participants").append(instanceParticipantDiv);
+        // });
+        //
+        // $("#arts").empty();
+        // data.arts.forEach(a => {
+        //     let instanceArtDiv = $("#instanceArtDiv").clone();
+        //     instanceArtDiv.find("img").get()[0].src = a.way;
+        //     instanceArtDiv.find("label[name='name']").get()[0].innerText = a.artName;
+        //     instanceArtDiv.find("label[name='artist']").get()[0].innerText = a.artist;
+        //     instanceArtDiv.find("label[name='start-price']").get()[0].innerText = a.price;
+        //     instanceArtDiv.find("label[name='sold-for']").get()[0].innerText = (a.newPrice) ? a.newPrice: '-';
+        //     instanceArtDiv.find("label[name='owner']").get()[0].innerText = a.owner;
+        //
+        //     instanceArtDiv.show();
+        //     instanceArtDiv.removeAttr('id');
+        //     $("#arts").append(instanceArtDiv);
+        // });
     });
 });
 
@@ -95,14 +95,12 @@ function getCountDown(ms) {
 
 function setupEvents(socket) {$("button[name='offer']").click(() => offer(socket));}
 
-function offer(socket) {
-    return socket.emit('offer', {raisingSum: parseInt($("input[name='raising-sum']").val()), money: parseInt($("#balance").text())});
-}
+function offer(socket) {return socket.emit('offer', {raisingSum: parseInt($("input[name='raising-sum']").val())});}
 
 function setArtInfo(data) {
     let item = data.item;
 
-    $("#art-dialog").find("img").get()[0].src = data.item.way;
+    $("#art-dialog").find("img").get()[0].src = item.way;
     $("#art-dialog").find("label[name='name']").get()[0].innerText = item.artName;
     $("#art-dialog").find("label[name='artist']").get()[0].innerText = item.artist;
     $("#art-dialog").find("label[name='start-price']").get()[0].innerText = item.price;

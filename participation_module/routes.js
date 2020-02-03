@@ -30,6 +30,8 @@ router.get('/admin', require('connect-ensure-login').ensureLoggedIn('/auth'), (r
     }
 
     let arts = db.arts.arts;
+    console.log(arts);
+
     arts.map(art => {if (!art.owner) art.owner = ""});
     console.log(arts);
     res.render('admin', {arts: arts, participants: db.users.participants});
