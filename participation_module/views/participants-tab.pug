@@ -1,7 +1,15 @@
-for participant in [1, 2, 3]
-    div.participant-box
-        div.participant-info
-            p Participant:
-                label(name="participant") !
-            p Balance:
-                label(name="money") !
+div.participant-box(id="instanceParticipantDiv")
+    div.participant-info
+        p Participant:
+            label(name="participant")
+        p Balance:
+            label(name="money")
+
+div.tab(id="participants")
+    for participant in participants
+        div.participant-box
+            div.participant-info
+                p Participant:
+                    label(name="participant") #{participant.username}
+                p Balance:
+                    label(name="money") #{participant.money}

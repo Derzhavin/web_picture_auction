@@ -1,15 +1,15 @@
 extends user-layout
 
 block user-content
-    for art in [1, 2, 3, 4, 5]
+    for art in arts
         div.art-box
             div.art-box-img
-                img(src="http://d2me0fuzw8a1c5.cloudfront.net/sites/default/files/styles/large/public/images/22922/krik_munka.jpeg")
+                img(src=art.way)
 
             div.art-box-info
                 p Name:
-                    label(name="name") !
+                    label(name="name") #{art.artName}
                 p Artist:
-                    label(name="artist") !
+                    label(name="artist") #{art.artist}
                 p Price:
-                    label(name="price") !
+                    label(name="price") #{art.price}

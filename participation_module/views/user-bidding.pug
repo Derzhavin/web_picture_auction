@@ -1,26 +1,4 @@
 extends user-layout
 
 block user-content
-    br
-    div(id="art-dialog").dialog
-        h3 Current art
-        img(src="http://d2me0fuzw8a1c5.cloudfront.net/sites/default/files/styles/large/public/images/22922/krik_munka.jpeg")
-        div.art-info
-            p Name:
-                label(name="name") !
-            p Artist:
-                label(name="artist") !
-            p Start price:
-                label(name="start-price") !
-            p Current price:
-                label(name="current-price") !
-            p Min step:
-                label(name="min-step") !
-            p Max step:
-                label(name="max-step") !
-            p Count down:
-                label(name="count-down") 00:00:00
-
-    include chat
-
-
+    include bidding

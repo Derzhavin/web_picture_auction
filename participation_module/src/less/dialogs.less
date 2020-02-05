@@ -19,6 +19,14 @@
   position: relative;
 }
 
+.dialog input:focus:required:invalid {
+  border: 2px solid red;
+}
+
+.dialog input:required:valid {
+  border: 2px solid black;
+}
+
 .dialog h3 {
   font-family: @font-family;
 }

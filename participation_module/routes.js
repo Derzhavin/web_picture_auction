@@ -1,7 +1,8 @@
 const express = require('express');
 var passport = require('passport');
 
-var adminKey = require('./db/users').adminKey;
+var db = require('./db');
+var adminKey = db.users.adminKey;
 
 var router = express.Router();
 
@@ -27,7 +28,13 @@ router.get('/admin', require('connect-ensure-login').ensureLoggedIn('/auth'), (r
     if (req.user.username !== 'admin' && req.user.password !== adminKey) {
         return res.send("It is admin page!");
     }
-    res.render('admin');
+
+    let arts = db.arts.arts;
+    console.log(arts);
+
+    arts.map(art => {if (!art.owner) art.owner = ""});
+    console.log(arts);
+    res.render('admin', {arts: arts, participants: db.users.participants});
 });
 
 router.get('/user-bidding' , require('connect-ensure-login').ensureLoggedIn('/auth'), (req, res) => {
@@ -47,7 +54,18 @@ router.get('/user-purchases', require('connect-ensure-login').ensureLoggedIn('/a
         return res.send("It is participant page!");
     }
 
-    res.render('user-purchases', {user: req.user});
+    res.render('user-purchases', {user: req.user, arts: getArtsBoughtByUser(req.user.username)});
 });
+
+
+function getArtsBoughtByUser(username) {
+    let itemsPurchased = db.purchases.getArtsByUsername(username);
+
+    if (itemsPurchased) {
+        return db.arts.arts.filter(art => itemsPurchased.includes(art.artName));
+    }
+
+    return [];
+}
 
 module.exports = router;
